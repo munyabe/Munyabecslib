@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Munyabe.Common", "Munyabe.Common\Munyabe.Common.csproj", "{1437D0EB-4746-41CB-BE98-89F2D1AB51FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Munyabe.Common", "Test.Munyabe.Common\Test.Munyabe.Common.csproj", "{32333C3A-5E87-4326-89BC-12D23F19604C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{20DD2E49-0AF7-42DC-B14C-94A849C70CF2}"
+	ProjectSection(SolutionItems) = preProject
+		MunyabeCSLibrary.vsmdi = MunyabeCSLibrary.vsmdi
+		Local.testsettings = Local.testsettings
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Munyabe.Windows", "Munyabe.Windows\Munyabe.Windows.csproj", "{78A481D5-2D02-4F64-9B26-77B9738C2074}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Munyabe.Windows", "Test.Munyabe.Windows\Test.Munyabe.Windows.csproj", "{E3DE710E-C59C-481F-B7AE-822C8735FBCB}"
+EndProject
+Global
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = MunyabeCSLibrary.vsmdi
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1437D0EB-4746-41CB-BE98-89F2D1AB51FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1437D0EB-4746-41CB-BE98-89F2D1AB51FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1437D0EB-4746-41CB-BE98-89F2D1AB51FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1437D0EB-4746-41CB-BE98-89F2D1AB51FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32333C3A-5E87-4326-89BC-12D23F19604C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32333C3A-5E87-4326-89BC-12D23F19604C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32333C3A-5E87-4326-89BC-12D23F19604C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32333C3A-5E87-4326-89BC-12D23F19604C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78A481D5-2D02-4F64-9B26-77B9738C2074}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78A481D5-2D02-4F64-9B26-77B9738C2074}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78A481D5-2D02-4F64-9B26-77B9738C2074}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78A481D5-2D02-4F64-9B26-77B9738C2074}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3DE710E-C59C-481F-B7AE-822C8735FBCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3DE710E-C59C-481F-B7AE-822C8735FBCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3DE710E-C59C-481F-B7AE-822C8735FBCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3DE710E-C59C-481F-B7AE-822C8735FBCB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
