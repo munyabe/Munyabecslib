@@ -14,6 +14,28 @@ namespace Test.Munyabe.Common
     public class IEnumerableExtensionsTest
     {
         [TestMethod]
+        public void CompareCountTest()
+        {
+            var count9 = Enumerable.Range(0, 9);
+            var count10A = Enumerable.Range(0, 10);
+            var count10B = Enumerable.Range(0, 10);
+            var count11 = Enumerable.Range(0, 11);
+
+            Assert.AreEqual(0, count10A.CompareCount(count10A));
+            Assert.AreEqual(0, count10A.CompareCount(count10B));
+
+            Assert.AreEqual(1, count11.CompareCount(count10A));
+            Assert.AreEqual(-1, count9.CompareCount(count10A));
+
+            IEnumerable<int> nullA = null;
+            IEnumerable<int> nullB = null;
+
+            Assert.AreEqual(0, nullA.CompareCount(nullB));
+            Assert.AreEqual(1, count9.CompareCount(nullA));
+            Assert.AreEqual(-1, nullA.CompareCount(count9));
+        }
+
+        [TestMethod]
         public void DistinctTest()
         {
             var actual1 = new[]

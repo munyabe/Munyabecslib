@@ -12,6 +12,59 @@ namespace Munyabe.Common
     public static class IEnumerableExtensions
     {
         /// <summary>
+        /// シーケンスの要素数を比較し、相対値を示す値を返します。
+        /// </summary>
+        /// <typeparam name="TSource">各要素の型</typeparam>
+        /// <param name="source">比較基のシーケンス</param>
+        /// <param name="target">比較対象のシーケンス</param>
+        /// <returns>
+        /// 要素数の相対値を示す値
+        /// <list type="table">
+        ///		<listheader><term>戻り値</term><description>説明</description></listheader>
+        ///		<item><term>0より小さい値</term><description>このシーケンスの要素数は<paramref name="target"/>より小さいことを示します。</description></item>
+        ///		<item><term>0</term><description>このシーケンスの要素数は<paramref name="target"/>と等しいことを示します。</description></item>
+        ///		<item><term>0より大きい値</term><description>このシーケンスの要素数は<paramref name="target"/>より大きいことを示します。</description></item>
+        /// </list>
+        /// </returns>
+        [DebuggerStepThrough]
+        public static int CompareCount<TSource>(this IEnumerable<TSource> source, IEnumerable<TSource> target)
+        {
+            if (source == target)
+            {
+                return 0;
+            }
+            else if (target == null)
+            {
+                return 1;
+            }
+            else if (source == null)
+            {
+                return -1;
+            }
+
+            var sourceEnumerator = source.GetEnumerator();
+            var targetEnumerator = target.GetEnumerator();
+
+            bool existSource;
+            bool existTarget;
+
+            while (true)
+            {
+                existSource = sourceEnumerator.MoveNext();
+                existTarget = targetEnumerator.MoveNext();
+
+                if (existSource == false)
+                {
+                    return existTarget ? -1 : 0;
+                }
+                else if (existTarget == false)
+                {
+                    return 1;
+                }
+            }
+        }
+
+        /// <summary>
         /// 指定された<paramref name="keySelector"/>を使用して取得した値を比較することにより、シーケンスから一意の要素を返します。
         /// </summary>
         /// <typeparam name="TSource">各要素の型</typeparam>
