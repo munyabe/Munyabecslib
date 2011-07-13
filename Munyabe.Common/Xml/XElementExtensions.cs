@@ -15,7 +15,7 @@ namespace Munyabe.Common.Xml
         /// <param name="attributeName">取得する属性名</param>
         /// <returns>指定した属性の値</returns>
         /// <exception cref="InvalidOperationException">指定した属性が見つかりません。</exception>
-        public static string GetAttributeValue(this XElement element, string attributeName)
+        public static string GetAttributeValue(this XElement element, XName attributeName)
         {
             var attribute = element.Attribute(attributeName);
             if (attribute != null)
@@ -37,7 +37,7 @@ namespace Munyabe.Common.Xml
         /// <param name="element"><c>XML</c>要素</param>
         /// <param name="attributeName">取得する属性名</param>
         /// <returns>指定した属性の値</returns>
-        public static string GetAttributeValueOrDefault(this XElement element, string attributeName)
+        public static string GetAttributeValueOrDefault(this XElement element, XName attributeName)
         {
             return GetAttributeValueOrDefault(element, attributeName, string.Empty);
         }
@@ -52,7 +52,7 @@ namespace Munyabe.Common.Xml
         /// <param name="attributeName">取得する属性名</param>
         /// <param name="defaultValue">属性が見つからない場合に返すデフォルト値</param>
         /// <returns>指定した属性の値</returns>
-        public static string GetAttributeValueOrDefault(this XElement element, string attributeName, string defaultValue)
+        public static string GetAttributeValueOrDefault(this XElement element, XName attributeName, string defaultValue)
         {
             var attribute = element.Attribute(attributeName);
             return attribute != null ? attribute.Value : defaultValue;
