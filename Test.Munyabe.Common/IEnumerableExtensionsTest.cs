@@ -27,12 +27,7 @@ namespace Test.Munyabe.Common
             Assert.AreEqual(1, count11.CompareCount(count10A));
             Assert.AreEqual(-1, count9.CompareCount(count10A));
 
-            IEnumerable<int> nullA = null;
-            IEnumerable<int> nullB = null;
-
-            Assert.AreEqual(0, nullA.CompareCount(nullB));
-            Assert.AreEqual(1, count9.CompareCount(nullA));
-            Assert.AreEqual(-1, nullA.CompareCount(count9));
+            Assert.AreEqual(1, count9.CompareCount(null));
         }
 
         [TestMethod]

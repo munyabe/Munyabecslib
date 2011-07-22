@@ -26,40 +26,40 @@ namespace Munyabe.Common
         ///		<item><term>0より大きい値</term><description>このシーケンスの要素数は<paramref name="target"/>より大きいことを示します。</description></item>
         /// </list>
         /// </returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>が<see langword="null"/>です。</exception>
         [DebuggerStepThrough]
         public static int CompareCount<TSource>(this IEnumerable<TSource> source, IEnumerable<TSource> target)
         {
-            if (source == target)
-            {
-                return 0;
-            }
-            else if (target == null)
+            Guard.ArgumentNotNull(source, "source");
+
+            if (target == null)
             {
                 return 1;
             }
-            else if (source == null)
+            else if (source == target)
             {
-                return -1;
+                return 0;
             }
 
-            var sourceEnumerator = source.GetEnumerator();
-            var targetEnumerator = target.GetEnumerator();
-
-            bool existSource;
-            bool existTarget;
-
-            while (true)
+            using (var sourceEnumerator = source.GetEnumerator())
+            using (var targetEnumerator = target.GetEnumerator())
             {
-                existSource = sourceEnumerator.MoveNext();
-                existTarget = targetEnumerator.MoveNext();
+                bool existSource;
+                bool existTarget;
 
-                if (existSource == false)
+                while (true)
                 {
-                    return existTarget ? -1 : 0;
-                }
-                else if (existTarget == false)
-                {
-                    return 1;
+                    existSource = sourceEnumerator.MoveNext();
+                    existTarget = targetEnumerator.MoveNext();
+
+                    if (existSource == false)
+                    {
+                        return existTarget ? -1 : 0;
+                    }
+                    else if (existTarget == false)
+                    {
+                        return 1;
+                    }
                 }
             }
         }
