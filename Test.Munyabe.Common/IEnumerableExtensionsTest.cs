@@ -81,6 +81,16 @@ namespace Test.Munyabe.Common
         }
 
         [TestMethod]
+        public void IsOverlappedTest()
+        {
+            var overlappedNums = new[] { 1, 2, 2, 3 };
+            Assert.IsTrue(overlappedNums.IsOverlapped());
+
+            var nonOverlappedNums = new[] { 1, 2, 3, 4 };
+            Assert.IsFalse(nonOverlappedNums.IsOverlapped());
+        }
+
+        [TestMethod]
         public void IsSingleTest()
         {
             Assert.IsTrue(Enumerable.Range(0, 1).IsSingle());
