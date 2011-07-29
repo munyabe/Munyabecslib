@@ -1,5 +1,4 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
+﻿Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Munyabe.Common", "Munyabe.Common\Munyabe.Common.csproj", "{1437D0EB-4746-41CB-BE98-89F2D1AB51FF}"
 EndProject
