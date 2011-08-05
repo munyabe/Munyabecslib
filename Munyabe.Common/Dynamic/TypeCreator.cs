@@ -11,6 +11,16 @@ namespace Munyabe.Common.Dynamic
     public static class TypeCreator
     {
         /// <summary>
+        /// <see cref="TypeCreator"/>で作成される型が宣言されるアセンブリ名です。
+        /// </summary>
+        public const string ASSEMBLY_NAME = "DynamicTypeAssembly";
+
+        /// <summary>
+        /// <see cref="TypeCreator"/>で作成される型が定義されているモジュール名です。
+        /// </summary>
+        public const string MODULE_NAME = "DynamicTypeModule";
+
+        /// <summary>
         /// 動的クラスを作成します。
         /// <remarks>POCO (Plain Old CLR Objects) Entityを作成します。</remarks>
         /// </summary>
@@ -41,10 +51,10 @@ namespace Munyabe.Common.Dynamic
             Type parentType,
             params CustomAttributeBuilder[] attributeBuilders)
         {
-            var assemblyName = new AssemblyName { Name = "DynamicTypeAssembly.dll" };
+            var assemblyName = new AssemblyName { Name = ASSEMBLY_NAME };
             var typeBuilder = AppDomain.CurrentDomain
                 .DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.Run)
-                .DefineDynamicModule("DynamicTypeModule")
+                .DefineDynamicModule(MODULE_NAME)
                 .DefineType(className, TypeAttributes.Public | TypeAttributes.Class, parentType);
 
             var propAttributes = MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig;

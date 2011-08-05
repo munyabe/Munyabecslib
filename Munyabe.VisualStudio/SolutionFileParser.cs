@@ -17,6 +17,8 @@ namespace Munyabe.VisualStudio
         /// </summary>
         /// <param name="solutionFilePath">ソリューションファイル</param>
         /// <returns>プロジェクトファイルの一覧</returns>
+        /// <exception cref="ArgumentException"><paramref name="solutionFilePath"/>はソリューションファイルではありません。</exception>
+        /// <exception cref="InvalidOperationException">指定されたソリューションファイルは未知のフォーマットです。</exception>
         public static IEnumerable<string> GetProjectFiles(string solutionFilePath)
         {
             return GetProjectFiles(solutionFilePath, true);
@@ -28,6 +30,8 @@ namespace Munyabe.VisualStudio
         /// <param name="solutionFilePath">ソリューションファイル</param>
         /// <param name="isAbsolutePath">絶対パスを取得する場合は<see langword="true"/></param>
         /// <returns>プロジェクトファイルの一覧</returns>
+        /// <exception cref="ArgumentException"><paramref name="solutionFilePath"/>はソリューションファイルではありません。</exception>
+        /// <exception cref="InvalidOperationException">指定されたソリューションファイルは未知のフォーマットです。</exception>
         public static IEnumerable<string> GetProjectFiles(string solutionFilePath, bool isAbsolutePath)
         {
             Guard.ArgumentNotNullOrEmpty(solutionFilePath, "projectFilePath");
@@ -43,7 +47,9 @@ namespace Munyabe.VisualStudio
                 throw new InvalidOperationException("This solution file is unknown format.");
             }
 
-            var files = allLines
+            var baseDir = isAbsolutePath ? Path.GetDirectoryName(solutionFilePath) : string.Empty;
+
+            return allLines
                 .Where(line => line.StartsWith("Project"))
                 .Select(line =>
                 {
@@ -55,23 +61,14 @@ namespace Munyabe.VisualStudio
 
                         if (projectName != candidate)
                         {
-                            return candidate.Substring(1, candidate.Length - 2);
+                            var path = candidate.Substring(1, candidate.Length - 2);
+                            return Path.Combine(baseDir, path);
                         }
                     }
 
                     return string.Empty;
                 })
                 .Where(path => string.IsNullOrEmpty(path) == false);
-
-            if (isAbsolutePath)
-            {
-                var baseDir = new FileInfo(solutionFilePath).Directory.FullName;
-                return files.Select(path => Path.Combine(baseDir, path));
-            }
-            else
-            {
-                return files;
-            }
         }
     }
 }
