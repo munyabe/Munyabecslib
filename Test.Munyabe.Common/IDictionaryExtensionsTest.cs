@@ -21,6 +21,43 @@ namespace Test.Munyabe.Common
         }
 
         [TestMethod]
+        public void EqualsPairTest()
+        {
+            var first = new Dictionary<int, string>();
+            first.Add(1, "First");
+            first.Add(2, "Second");
+
+            Assert.IsFalse(first.EqualsPair(null));
+
+            var sameDic = new Dictionary<int, string>();
+            sameDic.Add(1, "First");
+            sameDic.Add(2, "Second");
+
+            Assert.IsTrue(first.EqualsPair(sameDic));
+            Assert.IsTrue(sameDic.EqualsPair(first));
+
+            var differentDic = new Dictionary<int, string>();
+            differentDic.Add(1, "1st");
+            differentDic.Add(2, "2nd");
+
+            Assert.IsFalse(first.EqualsPair(differentDic));
+            Assert.IsFalse(differentDic.EqualsPair(first));
+
+            var nullValueDic = new Dictionary<int, string>();
+            nullValueDic.Add(1, null);
+            nullValueDic.Add(2, null);
+
+            Assert.IsFalse(first.EqualsPair(nullValueDic));
+            Assert.IsFalse(nullValueDic.EqualsPair(first));
+
+            var nullValueDic2 = new Dictionary<int, string>();
+            nullValueDic2.Add(1, null);
+            nullValueDic2.Add(2, null);
+
+            Assert.IsTrue(nullValueDic.EqualsPair(nullValueDic2));
+        }
+
+        [TestMethod]
         public void GetOrAddTest()
         {
             Assert.AreEqual(100, intValues.GetOrAdd("int1", 500));

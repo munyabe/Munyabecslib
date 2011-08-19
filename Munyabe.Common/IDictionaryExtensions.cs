@@ -9,6 +9,50 @@ namespace Munyabe.Common
     public static class IDictionaryExtensions
     {
         /// <summary>
+        /// キーと値のペアを比較して 2 つのディクショナリが等しいかどうかを判断します。
+        /// </summary>
+        /// <typeparam name="TKey">キーの型</typeparam>
+        /// <typeparam name="TValue">値の型</typeparam>
+        /// <param name="first"><paramref name="second"/>と比較するディクショナリ</param>
+        /// <param name="second">最初のディクショナリと比較するディクショナリ</param>
+        /// <returns>2 つのディクショナリのキーと値のペアが等しい場合は<see langword="true"/></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="first"/>が<see langword="null"/>です。</exception>
+        public static bool EqualsPair<TKey, TValue>(this IDictionary<TKey, TValue> first, IDictionary<TKey, TValue> second)
+        {
+            Guard.ArgumentNotNull(first, "first");
+
+            if (second == null || first.Count != second.Count)
+            {
+                return false;
+            }
+
+            foreach (var pair in first)
+            {
+                TValue value;
+                if (second.TryGetValue(pair.Key, out value))
+                {
+                    if (pair.Value == null)
+                    {
+                        if (value != null)
+                        {
+                            return false;
+                        }
+                    }
+                    else if (pair.Value.Equals(value) == false)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// キーがまだ存在しない場合に、<see cref="IDictionary{TKey, TValue}"/>にキーと値のペアを追加します。
         /// </summary>
         /// <typeparam name="TKey">キーの型</typeparam>
