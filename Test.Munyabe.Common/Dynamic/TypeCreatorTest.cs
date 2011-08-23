@@ -1,8 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection.Emit;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Munyabe.Common.ComponentModel;
 using Munyabe.Common.DataAnnotations.DataAnnotations;
 using Munyabe.Common.Dynamic;
 
@@ -20,7 +22,7 @@ namespace Test.Munyabe.Common.Dynamic
         [TestMethod]
         public void CreateIntsanceTest()
         {
-            var dynamicType = TypeCreator.CreateDynamicType(
+            var dynamicType = TypeCreator.CreateType(
                 "Person",
                 new[]
                 {
@@ -36,12 +38,6 @@ namespace Test.Munyabe.Common.Dynamic
 
             var data = Activator.CreateInstance(dynamicType);
 
-            dynamic person = data;
-            person.FirstName = "鈴木";
-            person.Age = 1;
-            Assert.AreEqual("鈴木", person.FirstName);
-            Assert.AreEqual(1, person.Age);
-
             var type = data.GetType();
             Assert.AreEqual("Person", type.FullName);
 
@@ -49,6 +45,12 @@ namespace Test.Munyabe.Common.Dynamic
             Assert.AreEqual("FirstName", properties[0].Name);
             Assert.AreEqual("LastName", properties[1].Name);
             Assert.AreEqual("Age", properties[2].Name);
+
+            dynamic person = data;
+            person.FirstName = "鈴木";
+            person.Age = 1;
+            Assert.AreEqual("鈴木", person.FirstName);
+            Assert.AreEqual(1, person.Age);
 
             var classAtt = data.GetType().GetCustomAttributes(false);
             Assert.IsInstanceOfType(classAtt.Single(), typeof(TestClassAttribute));
@@ -71,8 +73,8 @@ namespace Test.Munyabe.Common.Dynamic
         [TestMethod]
         public void CreateConcreteIntsanceTest()
         {
-            var dynamicType = TypeCreator.CreateDynamicType(
-                "Person",
+            var dynamicType = TypeCreator.CreateType(
+                "ConcretePerson",
                 new[] { new DynamicPropertyInfo("Name", typeof(string)) },
                 typeof(ParentClass));
 
@@ -85,6 +87,71 @@ namespace Test.Munyabe.Common.Dynamic
         public abstract class ParentClass
         {
             public int Id { get; set; }
+        }
+
+        [TestMethod]
+        public void CreateNotifiedTypeTest()
+        {
+            var createProperties = new[]
+                {
+                    new DynamicPropertyInfo("Name", typeof(string)),
+                    new DynamicPropertyInfo("Age", typeof(int)),
+                    new DynamicPropertyInfo("Birthday", typeof(DateTime)),
+                    new DynamicPropertyInfo("IsMale", typeof(bool)),
+                };
+
+            var dynamicType = TypeCreator.CreateNotifiedType<NotifyPropertyChangedBase>(
+                "NotifiedPerson", createProperties);
+
+            var data = Activator.CreateInstance(dynamicType) as INotifyPropertyChanged;
+            Assert.IsNotNull(data);
+
+            var type = data.GetType();
+            Assert.AreEqual("NotifiedPerson", type.FullName);
+
+            var personProperties = type.GetProperties();
+            Assert.IsTrue(personProperties.Select(prop => prop.Name).SequenceEqual(
+                personProperties.Select(prop => prop.Name)));
+
+            var propertyChangedCounts = createProperties.ToDictionary(prop => prop.Name, prop => 0);
+
+            data.PropertyChanged += (sender, e) => propertyChangedCounts[e.PropertyName]++;
+            dynamic person = data;
+
+            person.Name = "鈴木";
+            person.Age = 36;
+            person.Birthday = new DateTime(1973, 10, 22);
+            person.IsMale = true;
+
+            Assert.AreEqual("鈴木", person.Name);
+            Assert.AreEqual(36, person.Age);
+            Assert.AreEqual(new DateTime(1973, 10, 22), person.Birthday);
+            Assert.AreEqual(true, person.IsMale);
+
+            Assert.AreEqual(1, propertyChangedCounts["Name"]);
+            Assert.AreEqual(1, propertyChangedCounts["Age"]);
+            Assert.AreEqual(1, propertyChangedCounts["Birthday"]);
+            Assert.AreEqual(1, propertyChangedCounts["IsMale"]);
+
+            person.Name = "鈴木";
+            person.Age = 37;
+            person.Birthday = new DateTime(1973, 10, 22);
+            person.IsMale = true;
+
+            Assert.AreEqual(1, propertyChangedCounts["Name"]);
+            Assert.AreEqual(2, propertyChangedCounts["Age"]);
+            Assert.AreEqual(1, propertyChangedCounts["Birthday"]);
+            Assert.AreEqual(1, propertyChangedCounts["IsMale"]);
+
+            person.Name = "suzuki";
+            person.Age = 37;
+            person.Birthday = new DateTime(1974, 10, 22);
+            person.IsMale = false;
+
+            Assert.AreEqual(2, propertyChangedCounts["Name"]);
+            Assert.AreEqual(2, propertyChangedCounts["Age"]);
+            Assert.AreEqual(2, propertyChangedCounts["Birthday"]);
+            Assert.AreEqual(2, propertyChangedCounts["IsMale"]);
         }
     }
 }
