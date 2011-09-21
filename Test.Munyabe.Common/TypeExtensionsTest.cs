@@ -12,6 +12,16 @@ namespace Test.Munyabe.Common
     public class TypeExtensionsTest
     {
         [TestMethod]
+        public void CanSetNullTest()
+        {
+            Assert.IsTrue(typeof(string).CanSetNull());
+            Assert.IsTrue(typeof(int?).CanSetNull());
+
+            Assert.IsFalse(typeof(int).CanSetNull());
+            Assert.IsFalse(typeof(DateTime).CanSetNull());
+        }
+
+        [TestMethod]
         public void GetBaseTypesTest()
         {
             Assert.IsTrue(
