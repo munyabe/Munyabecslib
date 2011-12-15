@@ -236,6 +236,32 @@ namespace Munyabe.Common
         }
 
         /// <summary>
+        /// 重複している要素を返します。
+        /// </summary>
+        /// <typeparam name="T">各要素の型</typeparam>
+        /// <param name="source">処理を適用する値のシーケンス</param>
+        /// <returns>重複している要素のシーケンス</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>が<see langword="null"/>です。</exception>
+        [DebuggerStepThrough]
+        public static IEnumerable<T> Overlapped<T>(this IEnumerable<T> source)
+        {
+            Guard.ArgumentNotNull(source, "source");
+
+            var existSet = new HashSet<T>();
+            foreach (T each in source)
+            {
+                if (existSet.Contains(each))
+                {
+                    yield return each;
+                }
+                else
+                {
+                    existSet.Add(each);
+                }
+            }
+        }
+
+        /// <summary>
         /// <see cref="IEnumerable{T}"/>の各要素と子要素を再帰的に列挙します。アルゴリズムは深さ優先探索になります。
         /// </summary>
         /// <typeparam name="T">各要素の型</typeparam>
@@ -321,24 +347,6 @@ namespace Munyabe.Common
             Guard.ArgumentNotNull(source, "source");
 
             return new HashSet<T>(source);
-        }
-
-        /// <summary>
-        /// <see cref="IEnumerable{T}"/>から<see cref="HashSet{T}"/>を作成します。
-        /// </summary>
-        /// <typeparam name="TSource">各要素の型</typeparam>
-        /// <typeparam name="TResult">変換後の要素の型</typeparam>
-        /// <param name="source">処理を適用する値のシーケンス</param>
-        /// <param name="selector">各要素に適用する変換関数</param>
-        /// <returns>作成した<see cref="HashSet{T}"/></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="source"/>または<paramref name="selector"/>が<see langword="null"/>です。</exception>
-        [DebuggerStepThrough]
-        public static HashSet<TResult> ToHashSet<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector)
-        {
-            Guard.ArgumentNotNull(source, "source");
-            Guard.ArgumentNotNull(selector, "selector");
-
-            return source.Select(selector).ToHashSet();
         }
 
         /// <summary>

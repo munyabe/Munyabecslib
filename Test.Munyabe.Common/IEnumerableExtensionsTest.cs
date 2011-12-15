@@ -124,6 +124,25 @@ namespace Test.Munyabe.Common
         }
 
         [TestMethod]
+        public void OverlappedTest()
+        {
+            var actual1 = new[] { 1, 2, 3, 2, 3 }.Overlapped();
+            var expected1 = new[] { 2, 3 };
+
+            Assert.IsTrue(actual1.SequenceEqual(expected1));
+
+            var actual2 = new[] { 1, 2, 3, 2, 3, 3 }.Overlapped();
+            var expected2 = new[] { 2, 3, 3 };
+
+            Assert.IsTrue(actual2.SequenceEqual(expected2));
+
+            var actual3 = new[] { 1, 2, 3, 4, 5 }.Overlapped();
+            var expected3 = Enumerable.Empty<int>();
+
+            Assert.IsTrue(actual3.SequenceEqual(expected3));
+        }
+
+        [TestMethod]
         public void RecursiveTest()
         {
             var testTree = new TestTree("Parent");
@@ -196,11 +215,9 @@ namespace Test.Munyabe.Common
         public void ToHashSetTest()
         {
             var actual1 = new[] { 1, 2, 3, 2 }.ToHashSet();
-            var actual2 = new[] { 0, 1, 2, 3, 4, 5 }.ToHashSet(value => (value % 3) + 1);
-            var expected = new HashSet<int>(new[] { 1, 2, 3 });
+            var expected1 = new HashSet<int>(new[] { 1, 2, 3 });
 
-            Assert.IsTrue(actual1.SequenceEqual(expected));
-            Assert.IsTrue(actual2.SequenceEqual(expected));
+            Assert.IsTrue(actual1.SequenceEqual(expected1));
         }
 
         /// <summary>
