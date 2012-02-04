@@ -15,10 +15,10 @@ namespace Munyabe.VisualStudio
         /// <summary>
         /// プロジェクトファイルの一覧を取得します。
         /// </summary>
-        /// <param name="solutionFilePath">ソリューションファイル</param>
+        /// <param name="solutionFilePath">ソリューションファイルのパス</param>
         /// <returns>プロジェクトファイルの一覧</returns>
         /// <exception cref="ArgumentException"><paramref name="solutionFilePath"/>はソリューションファイルではありません。</exception>
-        /// <exception cref="InvalidOperationException">指定されたソリューションファイルは未知のフォーマットです。</exception>
+        /// <exception cref="ArgumentException">指定されたソリューションファイルは未知のフォーマットです。</exception>
         public static IEnumerable<string> GetProjectFiles(string solutionFilePath)
         {
             return GetProjectFiles(solutionFilePath, true);
@@ -27,25 +27,18 @@ namespace Munyabe.VisualStudio
         /// <summary>
         /// プロジェクトファイルの一覧を取得します。
         /// </summary>
-        /// <param name="solutionFilePath">ソリューションファイル</param>
+        /// <param name="solutionFilePath">ソリューションファイルのパス</param>
         /// <param name="isAbsolutePath">絶対パスを取得する場合は<see langword="true"/></param>
         /// <returns>プロジェクトファイルの一覧</returns>
         /// <exception cref="ArgumentException"><paramref name="solutionFilePath"/>はソリューションファイルではありません。</exception>
-        /// <exception cref="InvalidOperationException">指定されたソリューションファイルは未知のフォーマットです。</exception>
+        /// <exception cref="ArgumentException">指定されたソリューションファイルは未知のフォーマットです。</exception>
         public static IEnumerable<string> GetProjectFiles(string solutionFilePath, bool isAbsolutePath)
         {
             Guard.ArgumentNotNullOrEmpty(solutionFilePath, "projectFilePath");
-            if (solutionFilePath.EndsWith(".sln") == false)
-            {
-                throw new ArgumentException(string.Format("The path [{0}] is not solution file path.", solutionFilePath));
-            }
+            ArgumentNotSolutionFilePath(solutionFilePath);
 
             var allLines = File.ReadAllLines(solutionFilePath);
-            var firstLine = allLines.FirstOrDefault(line => string.IsNullOrEmpty(line) == false);
-            if (firstLine != null && firstLine.StartsWith("Microsoft Visual Studio Solution File") == false)
-            {
-                throw new InvalidOperationException("This solution file is unknown format.");
-            }
+            ArgumentKnownFormat(allLines);
 
             var baseDir = isAbsolutePath ? Path.GetDirectoryName(solutionFilePath) : string.Empty;
 
@@ -69,6 +62,29 @@ namespace Munyabe.VisualStudio
                     return string.Empty;
                 })
                 .Where(path => string.IsNullOrEmpty(path) == false);
+        }
+
+        /// <summary>
+        /// 解析可能なソリューションファイルのフォーマットであることを示します。
+        /// </summary>
+        private static void ArgumentKnownFormat(string[] allLines)
+        {
+            var firstLine = allLines.FirstOrDefault(line => string.IsNullOrEmpty(line) == false);
+            if (firstLine != null && firstLine.StartsWith("Microsoft Visual Studio Solution File") == false)
+            {
+                throw new ArgumentException("This solution file is unknown format.");
+            }
+        }
+
+        /// <summary>
+        /// <param name="solutionFilePath" />のパスがソリューションファイルであることを示します。
+        /// </summary>
+        private static void ArgumentNotSolutionFilePath(string solutionFilePath)
+        {
+            if (solutionFilePath.EndsWith(".sln") == false)
+            {
+                throw new ArgumentException(string.Format("The path [{0}] is not solution file path.", solutionFilePath));
+            }
         }
     }
 }
