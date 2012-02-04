@@ -42,6 +42,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileTypeFlags.cs" />
+    <Compile Include="ProjectFileParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SolutionFileParser.cs" />
   </ItemGroup>
