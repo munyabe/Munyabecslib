@@ -132,7 +132,7 @@ namespace Test.Munyabe.Common
             Assert.IsTrue(actual1.SequenceEqual(expected1));
 
             var actual2 = new[] { 1, 2, 3, 2, 3, 3 }.Overlapped();
-            var expected2 = new[] { 2, 3, 3 };
+            var expected2 = new[] { 2, 3 };
 
             Assert.IsTrue(actual2.SequenceEqual(expected2));
 

@@ -247,16 +247,21 @@ namespace Munyabe.Common
         {
             Guard.ArgumentNotNull(source, "source");
 
-            var existSet = new HashSet<T>();
+            var exists = new Dictionary<T, bool>();
             foreach (T each in source)
             {
-                if (existSet.Contains(each))
+                bool isExist;
+                if (exists.TryGetValue(each, out isExist))
                 {
-                    yield return each;
+                    if (isExist == false)
+                    {
+                        exists[each] = true;
+                        yield return each;
+                    }
                 }
                 else
                 {
-                    existSet.Add(each);
+                    exists.Add(each, false);
                 }
             }
         }
