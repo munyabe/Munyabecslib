@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Reflection;
+using Microsoft.VisualBasic.FileIO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Munyabe.Common;
 using Munyabe.VisualStudio;
 
 namespace Test.Munyabe.VisualStudio
@@ -11,27 +11,12 @@ namespace Test.Munyabe.VisualStudio
     /// <see cref="ProjectFileParser"/>のテストクラスです。
     /// </summary>
     [TestClass]
-    public class ProjectFileParserTest
+    public class ProjectFileParserTest : TestClassBase
     {
-        private string _testDataDir;
-
-        public TestContext TestContext { get; set; }
-
-        [TestInitialize]
-        public void Initialize()
-        {
-            var testDataDirName = "TestData";
-            var sourceDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var sourceTestDataDir = Path.Combine(sourceDir, testDataDirName);
-            _testDataDir = Path.Combine(TestContext.DeploymentDirectory, testDataDirName);
-
-            Directory.Move(sourceTestDataDir, _testDataDir);
-        }
-
         [TestMethod]
         public void GetFilesTest()
         {
-            var projectFilePath = Path.Combine(_testDataDir, "TestProjectFile.csproj");
+            var projectFilePath = GetTestDataPath("TestProjectFile.csproj");
 
             var csFiles = ProjectFileParser.GetFiles(projectFilePath, FileTypeFlags.CSharp).ToList();
             Assert.AreEqual(6, csFiles.Count);
