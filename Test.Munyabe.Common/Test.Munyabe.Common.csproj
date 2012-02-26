@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CollectionExtensionsTest.cs" />
+    <Compile Include="CommandLineParserTest.cs" />
     <Compile Include="ConverterUtilTest.cs" />
     <Compile Include="DateTimeExtensionsTest.cs" />
     <Compile Include="Dynamic\DynamicProxyTest.cs" />
