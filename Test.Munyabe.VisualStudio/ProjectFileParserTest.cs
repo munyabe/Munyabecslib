@@ -37,8 +37,9 @@ namespace Test.Munyabe.VisualStudio
             Assert.AreEqual(@"TestView\TestView.xaml", xamlFiles[1]);
 
             var resxFiles = ProjectFileParser.GetFiles(projectFilePath, FileTypeFlags.ResX, false).ToList();
-            Assert.AreEqual(1, resxFiles.Count);
+            Assert.AreEqual(2, resxFiles.Count);
             Assert.AreEqual(@"Properties\Resources.resx", resxFiles[0]);
+            Assert.AreEqual(@"Properties\Messages.resx", resxFiles[1]);
 
             var csAndXamlFiles = ProjectFileParser.GetFiles(projectFilePath, FileTypeFlags.Xaml | FileTypeFlags.CSharp);
             Assert.AreEqual(8, csAndXamlFiles.Count());

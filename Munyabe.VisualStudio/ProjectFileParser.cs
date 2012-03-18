@@ -62,7 +62,7 @@ namespace Munyabe.VisualStudio
             if ((fileType & FileTypeFlags.ResX) != 0)
             {
                 var dependentUpontXName = defaultNamespace.GetName("DependentUpon");
-                var resxFiles = GetCompileElements(document, defaultNamespace)
+                var resxFiles = GetItemGroupElements(document, defaultNamespace, "Compile", "EmbeddedResource")
                     .Select(element =>
                     {
                         var includeValue = element.GetAttributeValueOrDefault("Include");
@@ -75,7 +75,8 @@ namespace Munyabe.VisualStudio
                     })
                     .Where(each => each.Element != null)
                     .Select(each => Path.Combine(each.DirectoryPath, each.Element.Value))
-                    .Where(value => value.EndsWith(".resx"));
+                    .Where(value => value.EndsWith(".resx"))
+                    .Distinct();
                 attributes = attributes.Concat(resxFiles);
             }
 
@@ -129,19 +130,22 @@ namespace Munyabe.VisualStudio
         }
 
         /// <summary>
-        /// Compile 要素内の指定の要素を取得します。
+        /// ItemGroup 要素内の指定の要素を取得します。
         /// </summary>
-        private static IEnumerable<XElement> GetCompileElements(XContainer container, XNamespace defaultNamespace)
+        private static IEnumerable<XElement> GetItemGroupElements(XContainer container, XNamespace defaultNamespace, params string[] elementNames)
         {
             var projectXName = defaultNamespace.GetName("Project");
             var itemGroupXName = defaultNamespace.GetName("ItemGroup");
-            var compileXName = defaultNamespace.GetName("Compile");
 
-            return container
-                .Elements(projectXName)
-                .Elements(itemGroupXName)
-                .Elements(compileXName)
-                .Where(element => element != null);
+            return elementNames.SelectMany(name =>
+                {
+                    var targetXName = defaultNamespace.GetName(name);
+                    return container
+                        .Elements(projectXName)
+                        .Elements(itemGroupXName)
+                        .Elements(targetXName)
+                        .Where(element => element != null);
+                });
         }
     }
 }
