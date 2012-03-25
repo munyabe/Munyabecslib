@@ -16,9 +16,6 @@ namespace Test.Munyabe.Common.Dynamic
     [TestClass]
     public sealed class TypeCreatorTest
     {
-        /// <summary>
-        /// 動的クラスのインスタンスを作成し、指定の属性・プロパティが存在することを確認します。
-        /// </summary>
         [TestMethod]
         public void CreateIntsanceTest()
         {
@@ -67,9 +64,6 @@ namespace Test.Munyabe.Common.Dynamic
             Assert.IsFalse(ageAtt.Any());
         }
 
-        /// <summary>
-        /// 指定したクラスを継承した動的クラスを作成できることを確認します。
-        /// </summary>
         [TestMethod]
         public void CreateConcreteIntsanceTest()
         {
@@ -81,14 +75,6 @@ namespace Test.Munyabe.Common.Dynamic
             Assert.IsInstanceOfType(Activator.CreateInstance(dynamicType), typeof(ParentClass));
         }
 
-        /// <summary>
-        /// <see cref="CreateConcreteIntsanceTest"/>で作成するクラスの抽象クラスです。
-        /// </summary>
-        public abstract class ParentClass
-        {
-            public int Id { get; set; }
-        }
-
         [TestMethod]
         public void CreateNotifiedTypeTest()
         {
@@ -96,6 +82,7 @@ namespace Test.Munyabe.Common.Dynamic
                 {
                     new DynamicPropertyInfo("Name", typeof(string)),
                     new DynamicPropertyInfo("Age", typeof(int)),
+                    new DynamicPropertyInfo("Number", typeof(int?)),
                     new DynamicPropertyInfo("Birthday", typeof(DateTime)),
                     new DynamicPropertyInfo("IsMale", typeof(bool)),
                 };
@@ -120,38 +107,53 @@ namespace Test.Munyabe.Common.Dynamic
 
             person.Name = "鈴木";
             person.Age = 36;
+            person.Number = 51;
             person.Birthday = new DateTime(1973, 10, 22);
             person.IsMale = true;
 
             Assert.AreEqual("鈴木", person.Name);
             Assert.AreEqual(36, person.Age);
+            Assert.AreEqual(51, person.Number);
             Assert.AreEqual(new DateTime(1973, 10, 22), person.Birthday);
             Assert.AreEqual(true, person.IsMale);
 
             Assert.AreEqual(1, propertyChangedCounts["Name"]);
             Assert.AreEqual(1, propertyChangedCounts["Age"]);
+            Assert.AreEqual(1, propertyChangedCounts["Number"]);
             Assert.AreEqual(1, propertyChangedCounts["Birthday"]);
             Assert.AreEqual(1, propertyChangedCounts["IsMale"]);
 
             person.Name = "鈴木";
             person.Age = 37;
+            person.Number = 52;
             person.Birthday = new DateTime(1973, 10, 22);
             person.IsMale = true;
 
             Assert.AreEqual(1, propertyChangedCounts["Name"]);
             Assert.AreEqual(2, propertyChangedCounts["Age"]);
+            Assert.AreEqual(2, propertyChangedCounts["Number"]);
             Assert.AreEqual(1, propertyChangedCounts["Birthday"]);
             Assert.AreEqual(1, propertyChangedCounts["IsMale"]);
 
             person.Name = "suzuki";
             person.Age = 37;
+            person.Number = 52;
             person.Birthday = new DateTime(1974, 10, 22);
             person.IsMale = false;
 
             Assert.AreEqual(2, propertyChangedCounts["Name"]);
             Assert.AreEqual(2, propertyChangedCounts["Age"]);
+            Assert.AreEqual(2, propertyChangedCounts["Number"]);
             Assert.AreEqual(2, propertyChangedCounts["Birthday"]);
             Assert.AreEqual(2, propertyChangedCounts["IsMale"]);
+        }
+
+        /// <summary>
+        /// <see cref="CreateConcreteIntsanceTest"/>で作成するクラスの抽象クラスです。
+        /// </summary>
+        public abstract class ParentClass
+        {
+            public int Id { get; set; }
         }
     }
 }

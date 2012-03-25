@@ -12,6 +12,12 @@ namespace Munyabe.Common.Dynamic
     public static class TypeCreator
     {
         /// <summary>
+        /// プロパティのアクセサーの属性です。
+        /// </summary>
+        private const MethodAttributes PROPERTY_ATTRIBUTES =
+            MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig;
+
+        /// <summary>
         /// 動的アセンブリ内のモジュールです。
         /// </summary>
         private static ModuleBuilder _moduleBuilder = AppDomain.CurrentDomain
@@ -60,31 +66,17 @@ namespace Munyabe.Common.Dynamic
             var typeBuilder = _moduleBuilder.DefineType(
                 className, TypeAttributes.Public | TypeAttributes.Class, parentType);
 
-            var propAttributes = MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig;
-
             properties.ForEach(property =>
             {
                 var type = property.Type;
                 var name = property.Name;
                 var fieldBuilder = typeBuilder.DefineField("_" + name, type, FieldAttributes.Private);
 
-                var getMethodBuilder = typeBuilder.DefineMethod("get_" + name, propAttributes, type, Type.EmptyTypes);
-                var getMethodGenerator = getMethodBuilder.GetILGenerator();
-                getMethodGenerator.Emit(OpCodes.Ldarg_0);
-                getMethodGenerator.Emit(OpCodes.Ldfld, fieldBuilder);
-                getMethodGenerator.Emit(OpCodes.Ret);
-
-                var setMethodBuilder = typeBuilder.DefineMethod("set_" + name, propAttributes, null, new Type[] { type });
-                var setMethodGenerator = setMethodBuilder.GetILGenerator();
-                setMethodGenerator.Emit(OpCodes.Ldarg_0);
-                setMethodGenerator.Emit(OpCodes.Ldarg_1);
-                setMethodGenerator.Emit(OpCodes.Stfld, fieldBuilder);
-                setMethodGenerator.Emit(OpCodes.Ret);
-
                 var propertyBuilder = typeBuilder.DefineProperty(name, PropertyAttributes.HasDefault, type, null);
-                propertyBuilder.SetGetMethod(getMethodBuilder);
-                propertyBuilder.SetSetMethod(setMethodBuilder);
-
+                propertyBuilder.SetGetMethod(
+                    CreateGetterBuilder(name, type, typeBuilder, fieldBuilder));
+                propertyBuilder.SetSetMethod(
+                    CreateSetterBuilder(name, type, typeBuilder, fieldBuilder));
                 property.AttributeBuilders.ForEach(propertyBuilder.SetCustomAttribute);
             });
 
@@ -130,64 +122,121 @@ namespace Munyabe.Common.Dynamic
             var typeBuilder = _moduleBuilder.DefineType(
                 className, TypeAttributes.Public | TypeAttributes.Class, parentType);
 
-            var propAttributes = MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig;
             properties.ForEach(property =>
             {
                 var type = property.Type;
                 var name = property.Name;
                 var fieldBuilder = typeBuilder.DefineField("_" + name, type, FieldAttributes.Private);
 
-                var getMethodBuilder = typeBuilder.DefineMethod("get_" + name, propAttributes, type, Type.EmptyTypes);
-                var getMethodGenerator = getMethodBuilder.GetILGenerator();
-                getMethodGenerator.Emit(OpCodes.Ldarg_0);
-                getMethodGenerator.Emit(OpCodes.Ldfld, fieldBuilder);
-                getMethodGenerator.Emit(OpCodes.Ret);
-
-                var setMethodBuilder = typeBuilder.DefineMethod("set_" + name, propAttributes, null, new Type[] { type });
-                var setMethodGenerator = setMethodBuilder.GetILGenerator();
-
-                setMethodGenerator.Emit(OpCodes.Ldarg_0);
-                setMethodGenerator.Emit(OpCodes.Ldfld, fieldBuilder);
-                setMethodGenerator.Emit(OpCodes.Ldarg_1);
-
-                if (type.IsPrimitive == false && type != typeof(string))
-                {
-                    var equalsMethod = type.GetMethod("op_Equality", new[] { type, type });
-                    if (equalsMethod != null)
-                    {
-                        setMethodGenerator.Emit(OpCodes.Call, equalsMethod);
-                        setMethodGenerator.Emit(OpCodes.Ldc_I4_1);
-                    }
-                    else
-                    {
-                        throw new ArgumentException(string.Format(
-                            "The property [{0}] is invalid. The type [{1}] is not implement the [op_Equality] method.",
-                            name, type));
-                    }
-                }
-
-                setMethodGenerator.Emit(OpCodes.Ceq);
-                var returnLabel = setMethodGenerator.DefineLabel();
-                setMethodGenerator.Emit(OpCodes.Brtrue_S, returnLabel);
-                setMethodGenerator.Emit(OpCodes.Ldarg_0);
-                setMethodGenerator.Emit(OpCodes.Ldarg_1);
-                setMethodGenerator.Emit(OpCodes.Stfld, fieldBuilder);
-                setMethodGenerator.Emit(OpCodes.Ldarg_0);
-                setMethodGenerator.Emit(OpCodes.Ldstr, name);
-                setMethodGenerator.Emit(OpCodes.Callvirt, onPropertyChangedMethod);
-                setMethodGenerator.MarkLabel(returnLabel);
-                setMethodGenerator.Emit(OpCodes.Ret);
-
                 var propertyBuilder = typeBuilder.DefineProperty(name, PropertyAttributes.HasDefault, type, null);
-                propertyBuilder.SetGetMethod(getMethodBuilder);
-                propertyBuilder.SetSetMethod(setMethodBuilder);
-
+                propertyBuilder.SetGetMethod(
+                    CreateGetterBuilder(name, type, typeBuilder, fieldBuilder));
+                propertyBuilder.SetSetMethod(
+                    CreateNotifedSetterBuilder(name, type, typeBuilder, fieldBuilder, onPropertyChangedMethod));
                 property.AttributeBuilders.ForEach(propertyBuilder.SetCustomAttribute);
             });
 
             attributeBuilders.ForEach(typeBuilder.SetCustomAttribute);
 
             return typeBuilder.CreateType();
+        }
+
+        /// <summary>
+        /// 自動実装プロパティのゲッターを作成します。
+        /// </summary>
+        private static MethodBuilder CreateGetterBuilder(string name, Type type, TypeBuilder typeBuilder, FieldBuilder fieldBuilder)
+        {
+            var methodBuilder = typeBuilder.DefineMethod("get_" + name, PROPERTY_ATTRIBUTES, type, Type.EmptyTypes);
+            var generator = methodBuilder.GetILGenerator();
+            generator.Emit(OpCodes.Ldarg_0);
+            generator.Emit(OpCodes.Ldfld, fieldBuilder);
+            generator.Emit(OpCodes.Ret);
+            return methodBuilder;
+        }
+
+        /// <summary>
+        /// 自動実装プロパティのセッターを作成します。
+        /// </summary>
+        private static MethodBuilder CreateSetterBuilder(string name, Type type, TypeBuilder typeBuilder, FieldBuilder fieldBuilder)
+        {
+            var methodBuilder = typeBuilder.DefineMethod("set_" + name, PROPERTY_ATTRIBUTES, null, new Type[] { type });
+            var generator = methodBuilder.GetILGenerator();
+            generator.Emit(OpCodes.Ldarg_0);
+            generator.Emit(OpCodes.Ldarg_1);
+            generator.Emit(OpCodes.Stfld, fieldBuilder);
+            generator.Emit(OpCodes.Ret);
+            return methodBuilder;
+        }
+
+        /// <summary>
+        /// プロパティの変更を通知するセッターを作成します。
+        /// </summary>
+        private static MethodBuilder CreateNotifedSetterBuilder(string name, Type type, TypeBuilder typeBuilder, FieldBuilder fieldBuilder, MethodInfo onPropertyChangedMethod)
+        {
+            var methodBuilder = typeBuilder.DefineMethod("set_" + name, PROPERTY_ATTRIBUTES, null, new Type[] { type });
+            var generator = methodBuilder.GetILGenerator();
+
+            if (type.IsPrimitive || type == typeof(string))
+            {
+                generator.Emit(OpCodes.Ldarg_0);
+                generator.Emit(OpCodes.Ldfld, fieldBuilder);
+                generator.Emit(OpCodes.Ldarg_1);
+
+                generator.Emit(OpCodes.Ceq);
+            }
+            else if (IsNullable(type))
+            {
+                generator.Emit(OpCodes.Ldarg_0);
+                generator.Emit(OpCodes.Ldflda, fieldBuilder);
+                generator.Emit(OpCodes.Ldarg_1);
+
+                generator.Emit(OpCodes.Box, type);
+                generator.Emit(OpCodes.Constrained, type);
+
+                var equalsMethod = type.GetMethod("Equals", new[] { typeof(object) });
+                generator.Emit(OpCodes.Callvirt, equalsMethod);
+            }
+            else
+            {
+                var equalsMethod = type.GetMethod("op_Equality", new[] { type, type });
+                if (equalsMethod != null)
+                {
+                    generator.Emit(OpCodes.Ldarg_0);
+                    generator.Emit(OpCodes.Ldfld, fieldBuilder);
+                    generator.Emit(OpCodes.Ldarg_1);
+
+                    generator.Emit(OpCodes.Call, equalsMethod);
+                    generator.Emit(OpCodes.Ldc_I4_1);
+
+                    generator.Emit(OpCodes.Ceq);
+                }
+                else
+                {
+                    throw new ArgumentException(string.Format(
+                        "The property [{0}] is invalid. The type [{1}] is not implement the [op_Equality] method.",
+                        name, type));
+                }
+            }
+
+            var returnLabel = generator.DefineLabel();
+            generator.Emit(OpCodes.Brtrue_S, returnLabel);
+            generator.Emit(OpCodes.Ldarg_0);
+            generator.Emit(OpCodes.Ldarg_1);
+            generator.Emit(OpCodes.Stfld, fieldBuilder);
+            generator.Emit(OpCodes.Ldarg_0);
+            generator.Emit(OpCodes.Ldstr, name);
+            generator.Emit(OpCodes.Callvirt, onPropertyChangedMethod);
+            generator.MarkLabel(returnLabel);
+            generator.Emit(OpCodes.Ret);
+            return methodBuilder;
+        }
+
+        /// <summary>
+        /// <see cref="Nullable"/>かどうかを判定します。
+        /// </summary>
+        private static bool IsNullable(Type source)
+        {
+            return source.IsGenericType && source.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
     }
 }
