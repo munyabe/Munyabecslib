@@ -6,7 +6,7 @@ namespace Munyabe.Common
     /// <summary>
     /// コマンドライン引数を解析するクラスです。
     /// </summary>
-    public sealed class CommandLineParser
+    public static class CommandLineParser
     {
         /// <summary>
         /// 引数のキーを指定するプレフィックスです。

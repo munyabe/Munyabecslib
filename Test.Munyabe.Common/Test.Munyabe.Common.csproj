@@ -57,6 +57,7 @@
     <Compile Include="DateTimeExtensionsTest.cs" />
     <Compile Include="Dynamic\DynamicProxyTest.cs" />
     <Compile Include="ExpressionUtilTest.cs" />
+    <Compile Include="Globalization\CultureInfoExtensionsTest.cs" />
     <Compile Include="GuardTest.cs" />
     <Compile Include="IDictionaryExtensionsTest.cs" />
     <Compile Include="IEnumerableExtensionsTest.cs" />
