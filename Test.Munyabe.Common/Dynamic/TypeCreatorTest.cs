@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection.Emit;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Munyabe.Common.ComponentModel;
-using Munyabe.Common.DataAnnotations.DataAnnotations;
+using Munyabe.Common.ComponentModel.DataAnnotations;
 using Munyabe.Common.Dynamic;
 
 namespace Test.Munyabe.Common.Dynamic

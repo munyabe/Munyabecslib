@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Threading;
-using Munyabe.Common;
 
-namespace Isid.Istyle
+namespace Munyabe.Common
 {
     /// <summary>
     /// <see cref="ParallelQuery{T}"/>の拡張メソッドを定義するクラスです。

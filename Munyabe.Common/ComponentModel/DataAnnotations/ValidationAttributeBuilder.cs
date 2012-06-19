@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Munyabe.Common.DataAnnotations.DataAnnotations
+namespace Munyabe.Common.ComponentModel.DataAnnotations
 {
     /// <summary>
     /// 検証属性の<see cref="CustomAttributeBuilder"/>を作成する機能を提供するクラスです。
