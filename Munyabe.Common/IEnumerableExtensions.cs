@@ -15,7 +15,7 @@ namespace Munyabe.Common
         /// シーケンスの要素数を比較し、相対値を示す値を返します。
         /// </summary>
         /// <typeparam name="TSource">各要素の型</typeparam>
-        /// <param name="source">比較基のシーケンス</param>
+        /// <param name="source">比較元のシーケンス</param>
         /// <param name="target">比較対象のシーケンス</param>
         /// <returns>
         /// 要素数の相対値を示す値
@@ -62,6 +62,47 @@ namespace Munyabe.Common
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// シーケンスの要素数を比較し、相対値を示す値を返します。
+        /// </summary>
+        /// <typeparam name="TSource">各要素の型</typeparam>
+        /// <param name="source">比較元のシーケンス</param>
+        /// <param name="count">比較する数</param>
+        /// <returns>
+        /// 要素数の相対値を示す値
+        /// <list type="table">
+        ///		<listheader><term>戻り値</term><description>説明</description></listheader>
+        ///		<item><term>0より小さい値</term><description>このシーケンスの要素数は<paramref name="count"/>より小さいことを示します。</description></item>
+        ///		<item><term>0</term><description>このシーケンスの要素数は<paramref name="count"/>と等しいことを示します。</description></item>
+        ///		<item><term>0より大きい値</term><description>このシーケンスの要素数は<paramref count="target"/>より大きいことを示します。</description></item>
+        /// </list>
+        /// </returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>が<see langword="null"/>です。</exception>
+        public static int CompareCount<TSource>(this IEnumerable<TSource> source, int count)
+        {
+            Guard.ArgumentNotNull(source, "source");
+
+            if (count < 0)
+            {
+                return 1;
+            }
+
+            var index = 0;
+            using (var sourceEnumerator = source.GetEnumerator())
+            {
+                while (sourceEnumerator.MoveNext())
+                {
+                    index++;
+                    if (count < index)
+                    {
+                        return 1;
+                    }
+                }
+            }
+
+            return index == count ? 0 : -1;
         }
 
         /// <summary>
@@ -119,6 +160,20 @@ namespace Munyabe.Common
             {
                 action(each, i++);
             }
+        }
+
+        /// <summary>
+        /// 要素の数が指定の数と一致するかどうかを判断します。
+        /// </summary>
+        /// <typeparam name="T">各要素の型</typeparam>
+        /// <param name="source">カウントする要素が格納されているシーケンス</param>
+        /// <param name="count">期待する要素数</param>
+        /// <returns>要素の数が指定の数と一致するとき<see langword="true"/></returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>が<see langword="null"/>です。</exception>
+        [DebuggerStepThrough]
+        public static bool IsCount<T>(this IEnumerable<T> source, int count)
+        {
+            return CompareCount(source, count) == 0;
         }
 
         /// <summary>

@@ -31,6 +31,23 @@ namespace Test.Munyabe.Common
         }
 
         [TestMethod]
+        public void CompareCountByIntTest()
+        {
+            var count9 = Enumerable.Range(0, 9);
+            var count10 = Enumerable.Range(0, 10);
+            var count11 = Enumerable.Range(0, 11);
+
+            Assert.AreEqual(0, count9.CompareCount(9));
+            Assert.AreEqual(0, count10.CompareCount(10));
+            Assert.AreEqual(0, Enumerable.Empty<int>().CompareCount(0));
+
+            Assert.AreEqual(1, count11.CompareCount(10));
+            Assert.AreEqual(-1, count9.CompareCount(10));
+
+            Assert.AreEqual(1, count9.CompareCount(-1));
+        }
+
+        [TestMethod]
         public void DistinctTest()
         {
             var actual1 = new[]
@@ -78,6 +95,17 @@ namespace Test.Munyabe.Common
             Enumerable.Range(1, 10).ForEach((each, i) => sum += i);
 
             Assert.AreEqual(45, sum);
+        }
+
+        [TestMethod]
+        public void IsCountTest()
+        {
+            Assert.IsTrue(Enumerable.Range(0, 7).IsCount(7));
+
+            Assert.IsFalse(Enumerable.Range(0, 7).IsCount(6));
+            Assert.IsFalse(Enumerable.Range(0, 7).IsCount(8));
+            Assert.IsFalse(Enumerable.Range(0, 7).IsCount(0));
+            Assert.IsFalse(Enumerable.Range(0, 7).IsCount(-1));
         }
 
         [TestMethod]
