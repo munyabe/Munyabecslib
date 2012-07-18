@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 namespace Munyabe.Common.ComponentModel.DataAnnotations
 {
     /// <summary>
-    /// 検証属性の<see cref="CustomAttributeBuilder"/>を作成する機能を提供するクラスです。
+    /// 検証属性の<see cref="CustomAttributeBuilder"/>を作成するクラスです。
     /// </summary>
     public static class ValidationAttributeBuilder
     {
@@ -25,7 +25,7 @@ namespace Munyabe.Common.ComponentModel.DataAnnotations
                 type.GetConstructor(new[] { typeof(int), typeof(int) }),
                 new object[] { minimum, maximum },
                 GetNamedProperties(type),
-                new object[] { minimum, maximum, typeof(int), errorMessage, null, null });
+                new object[] { errorMessage, null, null, maximum, minimum, typeof(int) });
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace Munyabe.Common.ComponentModel.DataAnnotations
                 type.GetConstructor(new[] { typeof(Type), typeof(string), typeof(string) }),
                 new object[] { targetType, minimum, maximum },
                 GetNamedProperties(type),
-                new object[] { minimum, maximum, targetType, errorMessage, null, null });
+                new object[] { errorMessage, null, null, maximum, minimum, targetType });
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Munyabe.Common.ComponentModel.DataAnnotations
                 type.GetConstructor(new[] { typeof(string) }),
                 new object[] { pattern },
                 GetNamedProperties(type),
-                new object[] { pattern, errorMessage, null, null });
+                new object[] { errorMessage, null, null, pattern });
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace Munyabe.Common.ComponentModel.DataAnnotations
                 type.GetConstructor(new[] { typeof(int) }),
                 new object[] { maximum },
                 GetNamedProperties(type),
-                new object[] { maximum, minimum, errorMessage, null, null });
+                new object[] { errorMessage, null, null, maximum, minimum });
         }
 
         /// <summary>
@@ -101,7 +101,10 @@ namespace Munyabe.Common.ComponentModel.DataAnnotations
         /// <returns>名前付きプロパティ</returns>
         private static PropertyInfo[] GetNamedProperties(Type type)
         {
-            return type.GetProperties().Where(prop => prop.CanRead && prop.CanWrite).ToArray();
+            return type.GetProperties()
+                .Where(prop => prop.CanRead && prop.CanWrite)
+                .OrderBy(prop => prop.Name)
+                .ToArray();
         }
     }
 }
