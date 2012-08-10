@@ -8,6 +8,7 @@ namespace Test.Munyabe.VisualStudio
     /// <summary>
     /// テストクラスの基底クラスです。
     /// </summary>
+    [TestClass]
     public abstract class TestClassBase
     {
         /// <summary>
