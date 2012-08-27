@@ -291,6 +291,47 @@ namespace Munyabe.Common
         }
 
         /// <summary>
+        /// 要素が1種類かどうかを判断します。
+        /// </summary>
+        /// <typeparam name="T">各要素の型</typeparam>
+        /// <param name="source">処理を適用する値のシーケンス</param>
+        /// <returns>要素が1種類のとき<see langword="true"/>。要素が空の場合は<see langword="false"/>になります。</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>が<see langword="null"/>です。
+        /// </exception>
+        [DebuggerStepThrough]
+        public static bool IsSingleKind<T>(this IEnumerable<T> source)
+        {
+            Guard.ArgumentNotNull(source, "source");
+
+            using (var enumerator = source.GetEnumerator())
+            {
+                if (enumerator.MoveNext() == false)
+                {
+                    return false;
+                }
+
+                T first = enumerator.Current;
+                while (enumerator.MoveNext())
+                {
+                    var current = enumerator.Current;
+                    if (first == null)
+                    {
+                        if (current != null)
+                        {
+                            return false;
+                        }
+                    }
+                    else if (first.Equals(current) == false)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// 重複している要素を返します。
         /// </summary>
         /// <typeparam name="T">各要素の型</typeparam>

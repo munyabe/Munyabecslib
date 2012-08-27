@@ -152,6 +152,21 @@ namespace Test.Munyabe.Common
         }
 
         [TestMethod]
+        public void IsSingleKindTest()
+        {
+            Assert.IsTrue(new[] { 1 }.IsSingleKind());
+            Assert.IsTrue(new[] { 2, 2 }.IsSingleKind());
+
+            Assert.IsFalse(new[] { 1, 2 }.IsSingleKind());
+            Assert.IsFalse(new[] { 1, 1, 2 }.IsSingleKind());
+            Assert.IsFalse(Enumerable.Empty<int>().IsSingleKind());
+
+            Assert.IsTrue(new string[] { null }.IsSingleKind());
+            Assert.IsTrue(new string[] { null, null }.IsSingleKind());
+            Assert.IsFalse(new[] { null, "a" }.IsSingleKind());
+        }
+
+        [TestMethod]
         public void OverlappedTest()
         {
             var actual1 = new[] { 1, 2, 3, 2, 3 }.Overlapped();
