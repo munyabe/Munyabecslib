@@ -17,6 +17,16 @@ namespace Test.Munyabe.Common.ComponentModel.DataAnnotations
         private const string ERROR_MESSAGE = "This is error.";
 
         [TestMethod]
+        public void CreateDisplayBuilderTest()
+        {
+            var builder = ValidationAttributeBuilder.CreateDisplayBuilder("Hoge");
+            var attribute = CreateAttribute(builder) as DisplayAttribute;
+
+            Assert.IsNotNull(attribute);
+            Assert.AreEqual("Hoge", attribute.Name);
+        }
+
+        [TestMethod]
         public void CreateRangeBuilderByIntTest()
         {
             var builder = ValidationAttributeBuilder.CreateRangeBuilder(3, 7, ERROR_MESSAGE);
@@ -82,17 +92,17 @@ namespace Test.Munyabe.Common.ComponentModel.DataAnnotations
         /// </summary>
         private Attribute CreateAttribute(CustomAttributeBuilder attributeBuilder)
         {
-            var aName = new AssemblyName("TestAssembly");
-            AssemblyBuilder ab = AppDomain.CurrentDomain.DefineDynamicAssembly(
-                aName,
+            var assemblyName = new AssemblyName("TestAssembly");
+            var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(
+                assemblyName,
                 AssemblyBuilderAccess.Run,
                 new CustomAttributeBuilder[] { attributeBuilder });
 
-            var type = ab.DefineDynamicModule(aName.Name)
+            var type = assemblyBuilder.DefineDynamicModule(assemblyName.Name)
                 .DefineType("TestType", TypeAttributes.Public)
                 .CreateType();
 
-            return ab.GetCustomAttributes(true).OfType<Attribute>().FirstOrDefault();
+            return assemblyBuilder.GetCustomAttributes(true).OfType<Attribute>().FirstOrDefault();
         }
     }
 }

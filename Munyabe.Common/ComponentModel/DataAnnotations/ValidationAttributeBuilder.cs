@@ -12,6 +12,21 @@ namespace Munyabe.Common.ComponentModel.DataAnnotations
     public static class ValidationAttributeBuilder
     {
         /// <summary>
+        /// <see cref="DisplayAttribute"/>の<c>Builder</c>を作成します。
+        /// </summary>
+        /// <param name="name">表示する文字列</param>
+        /// <returns><see cref="RangeAttribute"/>の<c>Builder</c></returns>
+        public static CustomAttributeBuilder CreateDisplayBuilder(string name)
+        {
+            var type = typeof(DisplayAttribute);
+            return new CustomAttributeBuilder(
+                type.GetConstructor(Type.EmptyTypes),
+                new object[] { },
+                GetNamedProperty(type, "Name"),
+                new object[] { name });
+        }
+
+        /// <summary>
         /// <see cref="RangeAttribute"/>の<c>Builder</c>を作成します。
         /// </summary>
         /// <param name="minimum">値の最小値</param>
@@ -95,15 +110,28 @@ namespace Munyabe.Common.ComponentModel.DataAnnotations
         }
 
         /// <summary>
-        /// 名前付きプロパティを取得します。
+        /// 指定の型の全ての名前付きプロパティを取得します。
         /// </summary>
         /// <param name="type">プロパティを取得する型</param>
-        /// <returns>名前付きプロパティ</returns>
+        /// <returns>全ての名前付きプロパティ</returns>
         private static PropertyInfo[] GetNamedProperties(Type type)
         {
             return type.GetProperties()
                 .Where(prop => prop.CanRead && prop.CanWrite)
                 .OrderBy(prop => prop.Name)
+                .ToArray();
+        }
+
+        /// <summary>
+        /// 名前付きプロパティを取得します。
+        /// </summary>
+        /// <param name="type">プロパティを取得する型</param>
+        /// <param name="propertyName">取得するプロパティ名</param>
+        /// <returns>名前付きプロパティ</returns>
+        private static PropertyInfo[] GetNamedProperty(Type type, string propertyName)
+        {
+            return type.GetProperties()
+                .Where(prop => prop.CanRead && prop.CanWrite && prop.Name == propertyName)
                 .ToArray();
         }
     }
