@@ -4,16 +4,16 @@ using Munyabe.Common;
 namespace Test.Munyabe.Common
 {
     /// <summary>
-    /// <see cref="CommandLineParser"/>のテストクラスです。
+    /// <see cref="ConsoleUtil"/>のテストクラスです。
     /// </summary>
     [TestClass]
-    public class CommandLineParserTest
+    public class ConsoleUtilTest
     {
         [TestMethod]
         public void ParseTest()
         {
             var args = "-a hoge -b -cc fuga".Split(' ');
-            var result = CommandLineParser.Parse(args);
+            var result = ConsoleUtil.ParseArgs(args);
 
             Assert.AreEqual(3, result.Count);
             Assert.AreEqual("hoge", result["a"]);
@@ -25,7 +25,7 @@ namespace Test.Munyabe.Common
         public void ParseTest2()
         {
             var args = "-a hoge _b +cc fuga".Split(' ');
-            var result = CommandLineParser.Parse(args);
+            var result = ConsoleUtil.ParseArgs(args);
 
             Assert.AreEqual(1, result.Count);
             Assert.AreEqual("hoge", result["a"]);
@@ -35,7 +35,7 @@ namespace Test.Munyabe.Common
         public void ParseTest3()
         {
             var args = "-a hoge -".Split(' ');
-            var result = CommandLineParser.Parse(args);
+            var result = ConsoleUtil.ParseArgs(args);
 
             Assert.AreEqual(1, result.Count);
             Assert.AreEqual("hoge", result["a"]);
@@ -45,7 +45,7 @@ namespace Test.Munyabe.Common
         public void ParseTest4()
         {
             var args = "--a hoge -b --c".Split(' ');
-            var result = CommandLineParser.Parse(args, "--");
+            var result = ConsoleUtil.ParseArgs(args, "--");
 
             Assert.AreEqual(2, result.Count);
             Assert.AreEqual("hoge", result["a"]);

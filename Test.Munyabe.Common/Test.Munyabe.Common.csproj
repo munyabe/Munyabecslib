@@ -52,7 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CollectionExtensionsTest.cs" />
-    <Compile Include="CommandLineParserTest.cs" />
+    <Compile Include="ConsoleUtilTest.cs" />
     <Compile Include="ComponentModel\DataAnnotations\ValidationAttributeBuilderTest.cs" />
     <Compile Include="ConverterUtilTest.cs" />
     <Compile Include="DateTimeExtensionsTest.cs" />

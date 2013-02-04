@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -45,8 +45,8 @@
   <ItemGroup>
     <Compile Include="Algorithms\GraphSearch.cs" />
     <Compile Include="CollectionExtensions.cs" />
-    <Compile Include="CommandLineParser.cs" />
     <Compile Include="ComponentModel\NotifyPropertyChangedBase.cs" />
+    <Compile Include="ConsoleUtil.cs" />
     <Compile Include="ConverterUtil.cs" />
     <Compile Include="ComponentModel\DataAnnotations\ValidationAttributeBuilder.cs" />
     <Compile Include="DateTimeExtensions.cs" />
