@@ -188,7 +188,7 @@ namespace Munyabe.Common
             var member = expression.Body as MethodCallExpression;
             if (member == null)
             {
-                throw new ArgumentException();
+                throw new ArgumentException(string.Format("The expression [{0}] is not a method call.", expression));
             }
 
             return member.Method.Name;
@@ -204,7 +204,7 @@ namespace Munyabe.Common
             var member = expression.Body as MemberExpression;
             if (member == null)
             {
-                throw new ArgumentException();
+                throw new ArgumentException(string.Format("The expression [{0}] is not a field or property access.", expression));
             }
 
             return member.Member.Name;

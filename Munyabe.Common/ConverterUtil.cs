@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Munyabe.Common
 {
@@ -12,14 +13,14 @@ namespace Munyabe.Common
         /// <summary>
         /// 基本データ型のコンバーターを保持するディクショナリーです。
         /// </summary>
-        private static Dictionary<Type, Converter<object, object>> _converterMap;
+        private static Dictionary<Type, Converter<object, object>> _converterMap = new Dictionary<Type, Converter<object, object>>();
 
         /// <summary>
         /// 静的メンバーを初期化します。
         /// </summary>
+        [SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
         static ConverterUtil()
         {
-            _converterMap = new Dictionary<Type, Converter<object, object>>();
             _converterMap.Add(typeof(byte), value => Convert.ToByte(value));
             _converterMap.Add(typeof(short), value => Convert.ToInt16(value));
             _converterMap.Add(typeof(int), value => Convert.ToInt32(value));
@@ -84,6 +85,7 @@ namespace Munyabe.Common
         /// <param name="type">変換後の型</param>
         /// <param name="convertedValue">変換後の値。変換できなかった場合はデフォルト値になります。</param>
         /// <returns>変換できた場合は<see langword="true"/></returns>
+        [SuppressMessage("Microsoft.Design", "CA1007:UseGenericsWhereAppropriate")]
         public static bool TryConvertValue(object value, Type type, out object convertedValue)
         {
             if (value == null || value.GetType().Equals(type))

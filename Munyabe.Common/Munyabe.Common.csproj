@@ -57,6 +57,7 @@
     <Compile Include="ExpressionUtil.cs" />
     <Compile Include="Globalization\CultureInfoExtensions.cs" />
     <Compile Include="Globalization\LCID.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Guard.cs" />
     <Compile Include="IDictionaryExtensions.cs" />
     <Compile Include="IEnumerableExtensions.cs" />
