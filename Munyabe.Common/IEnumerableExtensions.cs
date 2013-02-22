@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Munyabe.Common.Algorithms;
 
@@ -213,6 +214,7 @@ namespace Munyabe.Common
         /// <returns>要素が重複しているとき<see langword="true"/></returns>
         /// <exception cref="ArgumentNullException"><paramref name="source"/>が<see langword="null"/>です。</exception>
         [DebuggerStepThrough]
+        [SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters")]
         public static bool IsOverlapped<T>(this IEnumerable<T> source, out T element)
         {
             Guard.ArgumentNotNull(source, "source");
@@ -248,16 +250,19 @@ namespace Munyabe.Common
             Guard.ArgumentNotNull(source, "source");
 
             int count = 0;
-            foreach (T each in source)
+            using (var enumerator = source.GetEnumerator())
             {
-                count++;
-                if (count == 2)
+                while (enumerator.MoveNext())
                 {
-                    break;
+                    count++;
+                    if (count == 2)
+                    {
+                        return false;
+                    }
                 }
             }
 
-            return count == 1;
+            return true;
         }
 
         /// <summary>

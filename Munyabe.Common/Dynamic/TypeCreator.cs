@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -21,18 +20,18 @@ namespace Munyabe.Common.Dynamic
         /// 動的アセンブリ内のモジュールです。
         /// </summary>
         private static ModuleBuilder _moduleBuilder = AppDomain.CurrentDomain
-            .DefineDynamicAssembly(new AssemblyName { Name = ASSEMBLY_NAME }, AssemblyBuilderAccess.Run)
-            .DefineDynamicModule(MODULE_NAME);
+            .DefineDynamicAssembly(new AssemblyName { Name = AssemblyName }, AssemblyBuilderAccess.Run)
+            .DefineDynamicModule(ModuleName);
 
         /// <summary>
         /// <see cref="TypeCreator"/>で作成される型が宣言されるアセンブリ名です。
         /// </summary>
-        public const string ASSEMBLY_NAME = "DynamicTypeAssembly";
+        public const string AssemblyName = "DynamicTypeAssembly";
 
         /// <summary>
         /// <see cref="TypeCreator"/>で作成される型が定義されているモジュール名です。
         /// </summary>
-        public const string MODULE_NAME = "DynamicTypeModule";
+        public const string ModuleName = "DynamicTypeModule";
 
         /// <summary>
         /// POCO (Plain Old CLR Objects) のクラスを作成します。
@@ -68,7 +67,7 @@ namespace Munyabe.Common.Dynamic
 
             properties.ForEach(property =>
             {
-                var type = property.Type;
+                var type = property.PropertyType;
                 var name = property.Name;
                 var fieldBuilder = typeBuilder.DefineField("_" + name, type, FieldAttributes.Private);
 
@@ -89,23 +88,23 @@ namespace Munyabe.Common.Dynamic
         /// プロパティの変更を通知する POCO (Plain Old CLR Objects) のクラスを作成します。
         /// </summary>
         /// <remarks>
-        /// <typeparamref name="T"/>が<c>OnPropertyChanged(string)</c>を実装している必要があります。
+        /// <paramref name="parentType"/>が<c>OnPropertyChanged(string)</c>を実装している必要があります。
         /// <paramref name="properties"/>のそれぞれの型はプリミティブ型、<see cref="string"/>、
         /// または比較演算子 == をオーバーロードしている型である必要があります。
         /// </remarks>
-        /// <typeparam name="T">継承するクラスの型</typeparam>
         /// <param name="className">クラス名</param>
+        /// <param name="parentType">継承するクラスの型</param>
         /// <param name="properties">作成するクラスのプロパティ</param>
         /// <param name="attributeBuilders">クラスに付与する属性のビルダー</param>
         /// <returns>作成したクラス</returns>
-        /// <exception cref="ArgumentException"><typeparamref name="T"/>が<c>OnPropertyChanged(string)</c>を実装していません。</exception>
+        /// <exception cref="ArgumentException"><paramref name="parentType"/>が<c>OnPropertyChanged(string)</c>を実装していません。</exception>
         /// <exception cref="ArgumentException">指定されたプロパティの型が比較演算子 == を実装していません。</exception>
-        public static Type CreateNotifiedType<T>(
+        public static Type CreateNotifiedType(
             string className,
+            Type parentType,
             IEnumerable<DynamicPropertyInfo> properties,
-            params CustomAttributeBuilder[] attributeBuilders) where T : INotifyPropertyChanged
+            params CustomAttributeBuilder[] attributeBuilders)
         {
-            var parentType = typeof(T);
             var onPropertyChangedMethod = parentType.GetMethod(
                 "OnPropertyChanged",
                 BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance,
@@ -124,7 +123,7 @@ namespace Munyabe.Common.Dynamic
 
             properties.ForEach(property =>
             {
-                var type = property.Type;
+                var type = property.PropertyType;
                 var name = property.Name;
                 var fieldBuilder = typeBuilder.DefineField("_" + name, type, FieldAttributes.Private);
 

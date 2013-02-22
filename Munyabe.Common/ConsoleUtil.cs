@@ -28,7 +28,7 @@ namespace Munyabe.Common
             var currentKey = string.Empty;
             foreach (var arg in args)
             {
-                if (switchPrefixes.Any(prefix => arg.StartsWith(prefix) && prefix.Length < arg.Length))
+                if (switchPrefixes.Any(prefix => arg.StartsWith(prefix, StringComparison.Ordinal) && prefix.Length < arg.Length))
                 {
                     var prefix = switchPrefixes.First(arg.StartsWith);
                     currentKey = arg.Substring(prefix.Length);

@@ -1,8 +1,11 @@
-﻿namespace Munyabe.Common.Globalization
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Munyabe.Common.Globalization
 {
     /// <summary>
     /// ロケールIDの一覧です。
     /// </summary>
+    [SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly")]
     public static class LCID
     {
         /// <summary>

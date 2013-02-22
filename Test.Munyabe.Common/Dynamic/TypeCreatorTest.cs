@@ -87,8 +87,8 @@ namespace Test.Munyabe.Common.Dynamic
                     new DynamicPropertyInfo("IsMale", typeof(bool)),
                 };
 
-            var dynamicType = TypeCreator.CreateNotifiedType<NotifyPropertyChangedBase>(
-                "NotifiedPerson", createProperties);
+            var dynamicType = TypeCreator.CreateNotifiedType(
+                "NotifiedPerson", typeof(NotifyPropertyChangedBase), createProperties);
 
             var data = Activator.CreateInstance(dynamicType) as INotifyPropertyChanged;
             Assert.IsNotNull(data);

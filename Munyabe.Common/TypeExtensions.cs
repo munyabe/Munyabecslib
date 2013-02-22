@@ -31,10 +31,21 @@ namespace Munyabe.Common
         /// 現在の<see cref="Type"/>で継承している全ての親クラスを取得します。
         /// </summary>
         /// <param name="type">現在の<see cref="Type"/></param>
+        /// <returns>継承している全ての親クラス</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="type"/>が<see langword="null"/>です。</exception>
+        public static IEnumerable<Type> GetBaseTypes(this Type type)
+        {
+            return GetBaseTypes(type, false);
+        }
+
+        /// <summary>
+        /// 現在の<see cref="Type"/>で継承している全ての親クラスを取得します。
+        /// </summary>
+        /// <param name="type">現在の<see cref="Type"/></param>
         /// <param name="containsSelf">戻り値に自身を含める場合は<c>true</c></param>
         /// <returns>継承している全ての親クラス</returns>
         /// <exception cref="ArgumentNullException"><paramref name="type"/>が<see langword="null"/>です。</exception>
-        public static IEnumerable<Type> GetBaseTypes(this Type type, bool containsSelf = false)
+        public static IEnumerable<Type> GetBaseTypes(this Type type, bool containsSelf)
         {
             Guard.ArgumentNotNull(type, "type");
 

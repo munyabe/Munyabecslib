@@ -17,10 +17,10 @@ namespace Munyabe.Common.ComponentModel
         /// <summary>
         /// <see cref="PropertyChanged"/>イベントを発生させます。
         /// </summary>
-        /// <param name="property">変更されたプロパティ</param>
-        protected virtual void OnPropertyChanged<TResult>(Expression<Func<TResult>> property)
+        /// <param name="getter">変更されたプロパティの Get アクセサー</param>
+        protected virtual void OnPropertyChanged<TResult>(Expression<Func<TResult>> getter)
         {
-            var propertyName = ExpressionUtil.GetMemberName(property);
+            var propertyName = ExpressionUtil.GetMemberName(getter);
             OnPropertyChanged(propertyName);
         }
 

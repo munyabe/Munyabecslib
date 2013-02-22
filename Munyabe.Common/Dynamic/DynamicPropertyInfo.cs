@@ -17,7 +17,7 @@ namespace Munyabe.Common.Dynamic
         /// <summary>
         /// プロパティの型を取得または設定します。
         /// </summary>
-        public Type Type { get; set; }
+        public Type PropertyType { get; set; }
 
         /// <summary>
         /// プロパティに付与する属性の<c>Builder</c>を取得または設定します。
@@ -33,7 +33,7 @@ namespace Munyabe.Common.Dynamic
         public DynamicPropertyInfo(string name, Type propertyType, params CustomAttributeBuilder[] attributeBuilders)
         {
             Name = name;
-            Type = propertyType;
+            PropertyType = propertyType;
             AttributeBuilders = attributeBuilders;
         }
     }

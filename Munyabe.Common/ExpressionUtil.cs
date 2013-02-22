@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -10,7 +11,7 @@ namespace Munyabe.Common
     public static class ExpressionUtil
     {
         /// <summary>
-        /// 指定したプロパティのゲッターメソッドを作成します。
+        /// 指定したプロパティの Get アクセサーを作成します。
         /// <remarks>
         /// 次のような<see cref="Func{T, T}"/>を作成します。
         /// </remarks>
@@ -20,26 +21,26 @@ namespace Munyabe.Common
         /// </code>
         /// </example>
         /// </summary>
-        /// <param name="property">アクセスするプロパティ</param>
-        /// <returns>ゲッターメソッド</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="property"/>が<see langword="null"/>です。</exception>
-        public static Expression<Func<object, object>> CreateGetter(PropertyInfo property)
+        /// <param name="propertyInfo">アクセスするプロパティ</param>
+        /// <returns>Get アクセサー</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/>が<see langword="null"/>です。</exception>
+        public static Expression<Func<object, object>> CreateGetter(PropertyInfo propertyInfo)
         {
-            Guard.ArgumentNotNull(property, "property");
+            Guard.ArgumentNotNull(propertyInfo, "property");
 
             var modelParameter = Expression.Parameter(typeof(object), "model");
 
             return Expression.Lambda<Func<object, object>>(
                 Expression.Convert(
                     Expression.Property(
-                        Expression.Convert(modelParameter, property.DeclaringType),
-                        property),
+                        Expression.Convert(modelParameter, propertyInfo.DeclaringType),
+                        propertyInfo),
                     typeof(object)),
                 modelParameter);
         }
 
         /// <summary>
-        /// 指定したプロパティのゲッターメソッドを作成します。
+        /// 指定したプロパティの Get アクセサーを作成します。
         /// <remarks>
         /// 次のような<see cref="Func{TDeclaring, TProperty}"/>を作成します。
         /// </remarks>
@@ -51,25 +52,25 @@ namespace Munyabe.Common
         /// </summary>
         /// <typeparam name="TDeclaring">プロパティを宣言するクラスの型</typeparam>
         /// <typeparam name="TProperty">プロパティの型</typeparam>
-        /// <param name="property">アクセスするプロパティ</param>
-        /// <returns>ゲッターメソッド</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="property"/>が<see langword="null"/>です。</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TDeclaring"/>が<paramref name="property"/>を宣言するクラスに割り当てられません。</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TProperty"/>が<paramref name="property"/>の型に一致しません。</exception>
-        public static Expression<Func<TDeclaring, TProperty>> CreateGetter<TDeclaring, TProperty>(PropertyInfo property)
+        /// <param name="propertyInfo">アクセスするプロパティ</param>
+        /// <returns>Get アクセサー</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/>が<see langword="null"/>です。</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TDeclaring"/>が<paramref name="propertyInfo"/>を宣言するクラスに割り当てられません。</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TProperty"/>が<paramref name="propertyInfo"/>の型に一致しません。</exception>
+        public static Expression<Func<TDeclaring, TProperty>> CreateGetter<TDeclaring, TProperty>(PropertyInfo propertyInfo)
         {
-            Guard.ArgumentNotNull(property, "property");
-            Guard.TypeIsAssignable(property.DeclaringType, typeof(TDeclaring), "TDeclaring");
-            Guard.TypeIsEqual(property.PropertyType, typeof(TProperty), "TProperty");
+            Guard.ArgumentNotNull(propertyInfo, "property");
+            Guard.TypeIsAssignable(propertyInfo.DeclaringType, typeof(TDeclaring), "TDeclaring");
+            Guard.TypeIsEqual(propertyInfo.PropertyType, typeof(TProperty), "TProperty");
 
             var modelParameter = Expression.Parameter(typeof(TDeclaring), "model");
 
             return Expression.Lambda<Func<TDeclaring, TProperty>>(
-                Expression.Property(modelParameter, property), modelParameter);
+                Expression.Property(modelParameter, propertyInfo), modelParameter);
         }
 
         /// <summary>
-        /// 指定したプロパティのセッターメソッドを作成します。
+        /// 指定したプロパティの Set アクセサーを作成します。
         /// <remarks>
         /// 次のような<see cref="Action{T, T}"/>を作成します。
         /// </remarks>
@@ -79,13 +80,13 @@ namespace Munyabe.Common
         /// </code>
         /// </example>
         /// </summary>
-        /// <param name="property">アクセスするプロパティ</param>
-        /// <returns>セッターメソッド</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="property"/>が<see langword="null"/>です。</exception>
-        /// <exception cref="ArgumentException"><paramref name="property"/>がジェネリック型です。</exception>
-        public static Expression<Action<object, object>> CreateSetter(PropertyInfo property)
+        /// <param name="propertyInfo">アクセスするプロパティ</param>
+        /// <returns>Set アクセサー</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/>が<see langword="null"/>です。</exception>
+        /// <exception cref="ArgumentException"><paramref name="propertyInfo"/>がジェネリック型です。</exception>
+        public static Expression<Action<object, object>> CreateSetter(PropertyInfo propertyInfo)
         {
-            Guard.ArgumentNotNull(property, "property");
+            Guard.ArgumentNotNull(propertyInfo, "property");
 
             var modelParameter = Expression.Parameter(typeof(object), "model");
             var valueParameter = Expression.Parameter(typeof(object), "value");
@@ -93,14 +94,14 @@ namespace Munyabe.Common
             return Expression.Lambda<Action<object, object>>(
                 Expression.Assign(
                     Expression.Property(
-                        Expression.Convert(modelParameter, property.DeclaringType),
-                        property),
-                    Expression.ConvertChecked(valueParameter, property.PropertyType)),
+                        Expression.Convert(modelParameter, propertyInfo.DeclaringType),
+                        propertyInfo),
+                    Expression.ConvertChecked(valueParameter, propertyInfo.PropertyType)),
                 modelParameter, valueParameter);
         }
 
         /// <summary>
-        /// 指定したプロパティのセッターメソッドを作成します。
+        /// 指定したプロパティの Set アクセサーを作成します。
         /// <remarks>
         /// 次のような<see cref="Action{T, T}"/>を作成します。
         /// </remarks>
@@ -112,23 +113,23 @@ namespace Munyabe.Common
         /// </summary>
         /// <typeparam name="TDeclaring">プロパティを宣言するクラスの型</typeparam>
         /// <typeparam name="TProperty">プロパティの型</typeparam>
-        /// <param name="property">アクセスするプロパティ</param>
-        /// <returns>セッターメソッド</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="property"/>が<see langword="null"/>です。</exception>
-        /// <exception cref="ArgumentException"><typeparamref name="TDeclaring"/>が<paramref name="property"/>を宣言するクラスに割り当てられません。</exception>
+        /// <param name="propertyInfo">アクセスするプロパティ</param>
+        /// <returns>Set アクセサー</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/>が<see langword="null"/>です。</exception>
+        /// <exception cref="ArgumentException"><typeparamref name="TDeclaring"/>が<paramref name="propertyInfo"/>を宣言するクラスに割り当てられません。</exception>
         /// <exception cref="ArgumentException"><typeparamref name="TProperty"/>がプロパティの型に割り当てられません。</exception>
-        public static Expression<Action<TDeclaring, TProperty>> CreateSetter<TDeclaring, TProperty>(PropertyInfo property)
+        public static Expression<Action<TDeclaring, TProperty>> CreateSetter<TDeclaring, TProperty>(PropertyInfo propertyInfo)
         {
-            Guard.ArgumentNotNull(property, "property");
-            Guard.TypeIsAssignable(property.DeclaringType, typeof(TDeclaring), "TDeclaring");
-            Guard.TypeIsAssignable(property.PropertyType, typeof(TProperty), "TProperty");
+            Guard.ArgumentNotNull(propertyInfo, "property");
+            Guard.TypeIsAssignable(propertyInfo.DeclaringType, typeof(TDeclaring), "TDeclaring");
+            Guard.TypeIsAssignable(propertyInfo.PropertyType, typeof(TProperty), "TProperty");
 
             var modelParameter = Expression.Parameter(typeof(TDeclaring), "model");
             var valueParameter = Expression.Parameter(typeof(TProperty), "value");
 
             return Expression.Lambda<Action<TDeclaring, TProperty>>(
                 Expression.Assign(
-                    Expression.Property(modelParameter, property), valueParameter),
+                    Expression.Property(modelParameter, propertyInfo), valueParameter),
                 modelParameter, valueParameter);
         }
 
