@@ -17,7 +17,7 @@ namespace Munyabe.Common
         /// <exception cref="ArgumentNullException"><paramref name="source"/>が<see langword="null"/>です。</exception>
         public static string GetUpperCases(this string source)
         {
-            Guard.ArgumentNotNull(source, "value");
+            Guard.ArgumentNotNull(source, "source");
 
             if (string.IsNullOrWhiteSpace(source))
             {
@@ -26,6 +26,19 @@ namespace Munyabe.Common
 
             var chars = source.Where(char.IsUpper);
             return string.Concat(chars);
+        }
+
+        /// <summary>
+        /// 文字列から改行を削除します。
+        /// </summary>
+        /// <remarks>マルチプラットフォームの改行コードを削除します。</remarks>
+        /// <param name="source">改行を削除する文字列</param>
+        /// <returns>改行を削除した文字列</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>が<see langword="null"/>です。</exception>
+        public static string RemoveNewLine(this string source)
+        {
+            Guard.ArgumentNotNull(source, "source");
+            return Regex.Replace(source, "\r\n|\r|\n", string.Empty);
         }
 
         /// <summary>
@@ -69,9 +82,9 @@ namespace Munyabe.Common
         /// </summary>
         private static string TrimHelper(string source, string removeValue, string patternFormat)
         {
-            Guard.ArgumentNotNull(source, "value");
+            Guard.ArgumentNotNull(source, "source");
 
-            var pattern = string.Format(patternFormat, Regex.Escape(removeValue));
+            var pattern = string.Format((IFormatProvider)null, patternFormat, Regex.Escape(removeValue));
             return Regex.Replace(source, pattern, string.Empty);
         }
     }
