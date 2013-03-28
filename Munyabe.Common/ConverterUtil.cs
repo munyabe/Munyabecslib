@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 
 namespace Munyabe.Common
 {
@@ -21,20 +22,20 @@ namespace Munyabe.Common
         [SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline")]
         static ConverterUtil()
         {
-            _converterMap.Add(typeof(byte), value => Convert.ToByte(value));
-            _converterMap.Add(typeof(short), value => Convert.ToInt16(value));
-            _converterMap.Add(typeof(int), value => Convert.ToInt32(value));
-            _converterMap.Add(typeof(long), value => Convert.ToInt64(value));
-            _converterMap.Add(typeof(sbyte), value => Convert.ToSByte(value));
-            _converterMap.Add(typeof(ushort), value => Convert.ToUInt16(value));
-            _converterMap.Add(typeof(uint), value => Convert.ToUInt32(value));
-            _converterMap.Add(typeof(ulong), value => Convert.ToUInt64(value));
-            _converterMap.Add(typeof(double), value => Convert.ToDouble(value));
-            _converterMap.Add(typeof(decimal), value => Convert.ToDecimal(value));
-            _converterMap.Add(typeof(bool), value => Convert.ToBoolean(value));
-            _converterMap.Add(typeof(char), value => Convert.ToChar(value));
-            _converterMap.Add(typeof(string), value => Convert.ToString(value));
-            _converterMap.Add(typeof(DateTime), value => Convert.ToDateTime(value));
+            _converterMap.Add(typeof(byte), value => Convert.ToByte(value, CultureInfo.InvariantCulture));
+            _converterMap.Add(typeof(short), value => Convert.ToInt16(value, CultureInfo.InvariantCulture));
+            _converterMap.Add(typeof(int), value => Convert.ToInt32(value, CultureInfo.InvariantCulture));
+            _converterMap.Add(typeof(long), value => Convert.ToInt64(value, CultureInfo.InvariantCulture));
+            _converterMap.Add(typeof(sbyte), value => Convert.ToSByte(value, CultureInfo.InvariantCulture));
+            _converterMap.Add(typeof(ushort), value => Convert.ToUInt16(value, CultureInfo.InvariantCulture));
+            _converterMap.Add(typeof(uint), value => Convert.ToUInt32(value, CultureInfo.InvariantCulture));
+            _converterMap.Add(typeof(ulong), value => Convert.ToUInt64(value, CultureInfo.InvariantCulture));
+            _converterMap.Add(typeof(double), value => Convert.ToDouble(value, CultureInfo.InvariantCulture));
+            _converterMap.Add(typeof(decimal), value => Convert.ToDecimal(value, CultureInfo.InvariantCulture));
+            _converterMap.Add(typeof(bool), value => Convert.ToBoolean(value, CultureInfo.InvariantCulture));
+            _converterMap.Add(typeof(char), value => Convert.ToChar(value, CultureInfo.InvariantCulture));
+            _converterMap.Add(typeof(string), value => Convert.ToString(value, CultureInfo.InvariantCulture));
+            _converterMap.Add(typeof(DateTime), value => Convert.ToDateTime(value, CultureInfo.InvariantCulture));
         }
 
         /// <summary>

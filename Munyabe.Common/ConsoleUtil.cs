@@ -22,6 +22,9 @@ namespace Munyabe.Common
         /// <returns>引数の種別をキーに値を保持するディクショナリー</returns>
         public static IDictionary<string, string> ParseArgs(string[] args, params string[] prefixes)
         {
+            Guard.ArgumentNotNull(args, "args");
+            Guard.ArgumentNotNull(prefixes, "prefixes");
+
             var result = new Dictionary<string, string>();
             var switchPrefixes = prefixes.Any() ? prefixes : _defaultPrefixes;
 

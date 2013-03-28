@@ -146,6 +146,7 @@ namespace Munyabe.Common
         /// <returns>フィールドまたはプロパティ名</returns>
         /// <exception cref="ArgumentNullException"><paramref name="expression"/>が<see langword="null"/>です。</exception>
         /// <exception cref="ArgumentException"><paramref name="expression"/>がフィールドまたはプロパティへのアクセスではありません。</exception>
+        [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static string GetMemberName<TResult>(Expression<Func<TResult>> expression)
         {
             return GetMemberNameHelper(expression);
@@ -165,6 +166,7 @@ namespace Munyabe.Common
         /// <returns>フィールドまたはプロパティ名</returns>
         /// <exception cref="ArgumentNullException"><paramref name="expression"/>が<see langword="null"/>です。</exception>
         /// <exception cref="ArgumentException"><paramref name="expression"/>がフィールドまたはプロパティへのアクセスではありません。</exception>
+        [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
         public static string GetMemberName<TInstance, TResult>(Expression<Func<TInstance, TResult>> expression)
         {
             return GetMemberNameHelper(expression);
