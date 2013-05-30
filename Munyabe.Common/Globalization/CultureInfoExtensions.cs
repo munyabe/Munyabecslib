@@ -51,9 +51,9 @@ namespace Munyabe.Common.Globalization
             var parentCulture = GetRootCultureInternal(culture);
             switch (parentCulture.LCID)
             {
-                case LCID.Japanese:
-                case LCID.Chinese:
-                case LCID.Korean:
+                case LCIDs.JA:
+                case LCIDs.ZH:
+                case LCIDs.KO:
                     return true;
                 default:
                     return false;
@@ -78,7 +78,7 @@ namespace Munyabe.Common.Globalization
         private static CultureInfo GetRootCultureInternal(CultureInfo culture)
         {
             var result = culture;
-            while (result.Parent.LCID != LCID.Empty)
+            while (result.Parent.LCID != LCIDs.Empty)
             {
                 result = result.Parent;
             }
