@@ -48,6 +48,20 @@ namespace Test.Munyabe.Common
         }
 
         [TestMethod]
+        public void ConcatTest()
+        {
+            var actual1 = Enumerable.Range(0, 9).Concat(9); ;
+
+            Assert.AreEqual(10, actual1.Count());
+            Assert.AreEqual(9, actual1.Last());
+
+            var actual2 = Enumerable.Empty<int>().Concat(7);
+
+            Assert.AreEqual(1, actual2.Count());
+            Assert.AreEqual(7, actual2.First());
+        }
+
+        [TestMethod]
         public void DistinctTest()
         {
             var actual1 = new[]

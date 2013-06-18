@@ -107,6 +107,26 @@ namespace Munyabe.Common
         }
 
         /// <summary>
+        /// シーケンスに要素を連結します。
+        /// </summary>
+        /// <typeparam name="TSource">各要素の型</typeparam>
+        /// <param name="source">連結するシーケンス</param>
+        /// <param name="item">連結する要素</param>
+        /// <returns>連結されたシーケンス</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>が<see langword="null"/>です。</exception>
+        public static IEnumerable<TSource> Concat<TSource>(this IEnumerable<TSource> source, TSource item)
+        {
+            Guard.ArgumentNotNull(source, "source");
+
+            foreach (var each in source)
+            {
+                yield return each;
+            }
+
+            yield return item;
+        }
+
+        /// <summary>
         /// 指定された<paramref name="keySelector"/>を使用して取得した値を比較することにより、シーケンスから一意の要素を返します。
         /// </summary>
         /// <typeparam name="TSource">各要素の型</typeparam>
