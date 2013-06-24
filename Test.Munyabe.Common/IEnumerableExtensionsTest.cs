@@ -269,6 +269,22 @@ namespace Test.Munyabe.Common
         }
 
         [TestMethod]
+        public void TakeDoWhileTest()
+        {
+            var testArray = new[] { 9, 3, 7, 2, 5, 4, 1, 8, 6 };
+            var emptyArray = new int[] { };
+
+            CollectionAssert.AreEqual(new[] { 9, 3, 7 }, testArray.TakeWhile(x => 2 < x).ToArray());
+            CollectionAssert.AreEqual(new[] { 9, 3, 7, 2 }, testArray.TakeDoWhile(x => 2 < x).ToArray());
+
+            CollectionAssert.AreEqual(emptyArray, testArray.TakeWhile(x => false).ToArray());
+            CollectionAssert.AreEqual(new[] { 9 }, testArray.TakeDoWhile(x => false).ToArray());
+
+            Assert.IsFalse(emptyArray.TakeWhile(x => true).Any());
+            Assert.IsFalse(emptyArray.TakeDoWhile(x => true).Any());
+        }
+
+        [TestMethod]
         public void ToHashSetTest()
         {
             var actual1 = new[] { 1, 2, 3, 2 }.ToHashSet();

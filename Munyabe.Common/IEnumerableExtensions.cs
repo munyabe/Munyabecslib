@@ -461,6 +461,29 @@ namespace Munyabe.Common
         }
 
         /// <summary>
+        /// 要素を返した後に指定された条件を判定し、条件が満たされる前と、その直後に出現するシーケンスの要素を返します。
+        /// </summary>
+        /// <typeparam name="TSource"><paramref name="source"/>の要素の型</typeparam>
+        /// <param name="source">要素を返すシーケンス</param>
+        /// <param name="predicate">各要素が条件を満たしているかどうかをテストする関数</param>
+        /// <returns>テストに合格しなくなった要素の前と、その直後に出現する、入力シーケンスの要素</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>または<paramref name="predicate"/>が<see langword="null"/>です。</exception>
+        public static IEnumerable<TSource> TakeDoWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
+        {
+            Guard.ArgumentNotNull(source, "source");
+            Guard.ArgumentNotNull(predicate, "predicate");
+
+            foreach (var item in source)
+            {
+                yield return item;
+                if (predicate(item) == false)
+                {
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
         /// <see cref="IEnumerable{T}"/>から<see cref="HashSet{T}"/>を作成します。
         /// </summary>
         /// <typeparam name="T">各要素の型</typeparam>
