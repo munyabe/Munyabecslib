@@ -58,6 +58,7 @@
     <Compile Include="Commands\CompositeCommandTest.cs" />
     <Compile Include="Commands\DelegateCommandTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RectExtensionsTest.cs" />
     <Compile Include="UIElementUtilTest.cs" />
     <Compile Include="TestView\UIElementUtilTestSubView.xaml.cs">
       <DependentUpon>UIElementUtilTestSubView.xaml</DependentUpon>
