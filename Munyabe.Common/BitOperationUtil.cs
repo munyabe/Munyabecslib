@@ -16,7 +16,7 @@ namespace Munyabe.Common
         /// </remarks>
         /// <param name="num">分解する整数</param>
         /// <returns>ビットの数列</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><param name="num"/>が負の整数です。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="num"/>が負の整数です。</exception>
         public static IEnumerable<int> DivideToBits(int num)
         {
             if (num < 0)
@@ -24,7 +24,7 @@ namespace Munyabe.Common
                 throw new ArgumentOutOfRangeException(string.Format("The argument [num] must be over 0."));
             }
 
-            for (int i = 0; 0 < num; num >>= 1, i++)
+            for (var i = 0; 0 < num; num >>= 1, i++)
             {
                 if ((num & 1) != 0)
                 {
