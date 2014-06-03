@@ -409,15 +409,13 @@ namespace Munyabe.Common
         /// <param name="getChildren">親要素から子要素の集合を取得する処理</param>
         /// <param name="searchAlgorithm">探索アルゴリズム</param>
         /// <returns>走査する親要素</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>が<see langword="null"/>です。</exception>
         /// <exception cref="ArgumentNullException"><paramref name="getChildren"/>が<see langword="null"/>です。</exception>
         [DebuggerStepThrough]
         public static IEnumerable<T> Recursive<T>(this IEnumerable<T> source, Func<T, IEnumerable<T>> getChildren, GraphSearchAlgorithm searchAlgorithm)
         {
+            Guard.ArgumentNotNull(source, "source");
             Guard.ArgumentNotNull(getChildren, "getChildren");
-            if (source == null)
-            {
-                yield break;
-            }
 
             switch (searchAlgorithm)
             {

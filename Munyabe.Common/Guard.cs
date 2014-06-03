@@ -19,7 +19,7 @@ namespace Munyabe.Common
         {
             if (argumentValue < 1)
             {
-                throw new ArgumentException(string.Format("The int argument [{0}] must be positive.", argumentName));
+                throw new ArgumentOutOfRangeException(string.Format("The int argument [{0}] must be positive.", argumentName));
             }
         }
 
