@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithms\GraphSearch.cs" />
+    <Compile Include="BitOperationUtil.cs" />
     <Compile Include="CollectionExtensions.cs" />
     <Compile Include="ComponentModel\NotifyPropertyChangedBase.cs" />
     <Compile Include="ConsoleUtil.cs" />
