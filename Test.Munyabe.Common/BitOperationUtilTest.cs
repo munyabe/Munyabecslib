@@ -20,5 +20,17 @@ namespace Test.Munyabe.Common
 
             Assert.IsFalse(BitOperationUtil.DivideToBits(0).Any());
         }
+
+        [TestMethod]
+        public void IsSingleBitTest()
+        {
+            Assert.IsTrue(BitOperationUtil.IsSingleBit(1));
+            Assert.IsTrue(BitOperationUtil.IsSingleBit(8));
+            Assert.IsTrue(BitOperationUtil.IsSingleBit(256));
+
+            Assert.IsFalse(BitOperationUtil.IsSingleBit(0));
+            Assert.IsFalse(BitOperationUtil.IsSingleBit(7));
+            Assert.IsFalse(BitOperationUtil.IsSingleBit(192));
+        }
     }
 }
