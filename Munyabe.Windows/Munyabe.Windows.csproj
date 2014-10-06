@@ -50,6 +50,7 @@
     <Compile Include="Commands\DelegateCommand.cs" />
     <Compile Include="Commands\IActiveAware.cs" />
     <Compile Include="Drawing\DrawingExtensions.cs" />
+    <Compile Include="FontUtil.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Properties\ErrorMessageResource.Designer.cs">
       <AutoGen>True</AutoGen>

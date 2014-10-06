@@ -66,6 +66,7 @@
     <Compile Include="TestView\UIElementUtilTestView.xaml.cs">
       <DependentUpon>UIElementUtilTestView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="FontUtilTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Munyabe.Common\Munyabe.Common.csproj">
