@@ -68,6 +68,7 @@
     <Compile Include="StringUtilTest.cs" />
     <Compile Include="TypeExtensionsTest.cs" />
     <Compile Include="BitOperationUtilTest.cs" />
+    <Compile Include="MemoryCheckerTest.cs" />
     <Compile Include="Xml\XElementExtensionsTest.cs" />
   </ItemGroup>
   <ItemGroup>
