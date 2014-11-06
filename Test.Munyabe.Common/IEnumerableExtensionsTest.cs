@@ -183,20 +183,14 @@ namespace Test.Munyabe.Common
         [TestMethod]
         public void OverlappedTest()
         {
-            var actual1 = new[] { 1, 2, 3, 2, 3 }.Overlapped();
-            var expected1 = new[] { 2, 3 };
+            Assert.IsTrue(new[] { 1, 2, 3, 2, 3 }.Overlapped().SequenceEqual(new[] { 2, 3 }));
+            Assert.IsTrue(new[] { 1, 2, 2, 3, 3, 3 }.Overlapped().SequenceEqual(new[] { 2, 3 }));
+            Assert.IsFalse(new[] { 1, 2, 3, 4, 5 }.Overlapped().Any());
 
-            Assert.IsTrue(actual1.SequenceEqual(expected1));
-
-            var actual2 = new[] { 1, 2, 3, 2, 3, 3 }.Overlapped();
-            var expected2 = new[] { 2, 3 };
-
-            Assert.IsTrue(actual2.SequenceEqual(expected2));
-
-            var actual3 = new[] { 1, 2, 3, 4, 5 }.Overlapped();
-            var expected3 = Enumerable.Empty<int>();
-
-            Assert.IsTrue(actual3.SequenceEqual(expected3));
+            var compare = new PrefixCompare();
+            Assert.IsTrue(new[] { "AA", "AB", "BB" }.Overlapped(compare).SequenceEqual(new[] { "AB" }));
+            Assert.IsTrue(new[] { "AA", "AB", "AC", "BB", "BC" }.Overlapped(compare).SequenceEqual(new[] { "AB", "BC" }));
+            Assert.IsFalse(new[] { "AA", "BB", "CC" }.Overlapped(compare).Any());
         }
 
         [TestMethod]
@@ -331,6 +325,37 @@ namespace Test.Munyabe.Common
             IEnumerator IEnumerable.GetEnumerator()
             {
                 return GetEnumerator();
+            }
+        }
+
+        /// <summary>
+        /// 先頭の1a文字を比較する<see cref="IEqualityComparer{T}"/>です。
+        /// </summary>
+        private class PrefixCompare : IEqualityComparer<string>
+        {
+            /// <inheritdoc />
+            public bool Equals(string x, string y)
+            {
+                if (x == null)
+                {
+                    return y == null;
+                }
+                else if (y == null)
+                {
+                    return false;
+                }
+                else if (object.ReferenceEquals(x, y))
+                {
+                    return true;
+                }
+
+                return x.Substring(0, 1) == y.Substring(0, 1);
+            }
+
+            /// <inheritdoc />
+            public int GetHashCode(string obj)
+            {
+                return obj.Substring(0, 1).GetHashCode();
             }
         }
     }

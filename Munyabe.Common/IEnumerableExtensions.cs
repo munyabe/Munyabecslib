@@ -367,24 +367,22 @@ namespace Munyabe.Common
         public static IEnumerable<T> Overlapped<T>(this IEnumerable<T> source)
         {
             Guard.ArgumentNotNull(source, "source");
+            return OverlappedInternal(source, null);
+        }
 
-            var exists = new Dictionary<T, bool>();
-            foreach (T each in source)
-            {
-                bool isExist;
-                if (exists.TryGetValue(each, out isExist))
-                {
-                    if (isExist == false)
-                    {
-                        exists[each] = true;
-                        yield return each;
-                    }
-                }
-                else
-                {
-                    exists.Add(each, false);
-                }
-            }
+        /// <summary>
+        /// 重複している要素を返します。
+        /// </summary>
+        /// <typeparam name="T">各要素の型</typeparam>
+        /// <param name="source">処理を適用する値のシーケンス</param>
+        /// <param name="comparer">値を比較する<see cref="IEqualityComparer{T}"/></param>
+        /// <returns>重複している要素のシーケンス</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>が<see langword="null"/>です。</exception>
+        [DebuggerStepThrough]
+        public static IEnumerable<T> Overlapped<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer)
+        {
+            Guard.ArgumentNotNull(source, "source");
+            return OverlappedInternal(source, comparer);
         }
 
         /// <summary>
@@ -514,6 +512,30 @@ namespace Munyabe.Common
             {
                 action(value);
                 yield return value;
+            }
+        }
+
+        /// <summary>
+        /// 重複している要素を返す内部メソッドです。
+        /// </summary>
+        private static IEnumerable<T> OverlappedInternal<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer)
+        {
+            var exists = new Dictionary<T, bool>(comparer);
+            foreach (T each in source)
+            {
+                bool isExist;
+                if (exists.TryGetValue(each, out isExist))
+                {
+                    if (isExist == false)
+                    {
+                        exists[each] = true;
+                        yield return each;
+                    }
+                }
+                else
+                {
+                    exists.Add(each, false);
+                }
             }
         }
 
