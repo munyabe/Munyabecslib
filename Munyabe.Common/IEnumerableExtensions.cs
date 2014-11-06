@@ -198,66 +198,6 @@ namespace Munyabe.Common
         }
 
         /// <summary>
-        /// 要素が重複しているかどうかを判断します。
-        /// </summary>
-        /// <typeparam name="T">各要素の型</typeparam>
-        /// <param name="source">処理を適用する値のシーケンス</param>
-        /// <returns>要素が重複しているとき<see langword="true"/></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="source"/>が<see langword="null"/>です。</exception>
-        [DebuggerStepThrough]
-        public static bool IsOverlapped<T>(this IEnumerable<T> source)
-        {
-            Guard.ArgumentNotNull(source, "source");
-
-            var set = new HashSet<T>();
-            foreach (T each in source)
-            {
-                if (set.Contains(each))
-                {
-                    return true;
-                }
-                else
-                {
-                    set.Add(each);
-                }
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// 要素が重複しているかどうかを判断します。
-        /// </summary>
-        /// <typeparam name="T">各要素の型</typeparam>
-        /// <param name="source">処理を適用する値のシーケンス</param>
-        /// <param name="element">重複した要素（重複がない場合はデフォルト値になります）</param>
-        /// <returns>要素が重複しているとき<see langword="true"/></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="source"/>が<see langword="null"/>です。</exception>
-        [DebuggerStepThrough]
-        [SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters")]
-        public static bool IsOverlapped<T>(this IEnumerable<T> source, out T element)
-        {
-            Guard.ArgumentNotNull(source, "source");
-
-            var set = new HashSet<T>();
-            foreach (T each in source)
-            {
-                if (set.Contains(each))
-                {
-                    element = each;
-                    return true;
-                }
-                else
-                {
-                    set.Add(each);
-                }
-            }
-
-            element = default(T);
-            return false;
-        }
-
-        /// <summary>
         /// <see cref="IEnumerable{T}"/>の要素が単一であるかどうかを判断します。
         /// </summary>
         /// <typeparam name="T">各要素の型</typeparam>

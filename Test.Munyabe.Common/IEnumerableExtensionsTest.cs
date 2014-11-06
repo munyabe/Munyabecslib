@@ -123,38 +123,6 @@ namespace Test.Munyabe.Common
         }
 
         [TestMethod]
-        public void IsOverlappedTest()
-        {
-            var overlappedNums = new[] { 1, 2, 2, 3 };
-            Assert.IsTrue(overlappedNums.IsOverlapped());
-
-            var nonOverlappedNums = new[] { 1, 2, 3, 4 };
-            Assert.IsFalse(nonOverlappedNums.IsOverlapped());
-
-            var overlappedStrings = new[] { "A", "B", "C", "A" };
-            Assert.IsTrue(overlappedStrings.IsOverlapped());
-
-            var nonOverlappedStrings = new[] { "A", "B", "C", "D" };
-            Assert.IsFalse(nonOverlappedStrings.IsOverlapped());
-
-            int overlappedNum;
-            Assert.IsTrue(overlappedNums.IsOverlapped(out overlappedNum));
-            Assert.AreEqual(2, overlappedNum);
-
-            int dummyNum;
-            Assert.IsFalse(nonOverlappedNums.IsOverlapped(out dummyNum));
-            Assert.AreEqual(0, dummyNum);
-
-            string overlappedString;
-            Assert.IsTrue(overlappedStrings.IsOverlapped(out overlappedString));
-            Assert.AreEqual("A", overlappedString);
-
-            string dummyString;
-            Assert.IsFalse(nonOverlappedStrings.IsOverlapped(out dummyString));
-            Assert.IsNull(dummyString);
-        }
-
-        [TestMethod]
         public void IsSingleTest()
         {
             Assert.IsTrue(Enumerable.Range(0, 1).IsSingle());
