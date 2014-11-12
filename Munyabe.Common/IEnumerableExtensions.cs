@@ -140,7 +140,7 @@ namespace Munyabe.Common
             Guard.ArgumentNotNull(source, "source");
             Guard.ArgumentNotNull(keySelector, "selector");
 
-            return source.Distinct(new SelectionComparer<TSource, TKey>(keySelector));
+            return source.Distinct(new SelectionEqualityComparer<TSource, TKey>(keySelector));
         }
 
         /// <summary>
@@ -306,6 +306,7 @@ namespace Munyabe.Common
         public static IEnumerable<T> Overlapped<T>(this IEnumerable<T> source)
         {
             Guard.ArgumentNotNull(source, "source");
+
             return OverlappedInternal(source, null);
         }
 
@@ -321,6 +322,7 @@ namespace Munyabe.Common
         public static IEnumerable<T> Overlapped<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer)
         {
             Guard.ArgumentNotNull(source, "source");
+
             return OverlappedInternal(source, comparer);
         }
 
@@ -339,7 +341,7 @@ namespace Munyabe.Common
             Guard.ArgumentNotNull(source, "source");
             Guard.ArgumentNotNull(keySelector, "keySelector");
 
-            return OverlappedInternal(source, new SelectionComparer<TSource, TKey>(keySelector));
+            return OverlappedInternal(source, new SelectionEqualityComparer<TSource, TKey>(keySelector));
         }
 
         /// <summary>
@@ -497,9 +499,9 @@ namespace Munyabe.Common
         }
 
         /// <summary>
-        /// 変換した値から2つのオブジェクトが等しいかどうかを比較します。
+        /// 変換した値から2つのオブジェクトが等しいかどうかを比較する<see cref="IEqualityComparer{T}"/>です。
         /// </summary>
-        private class SelectionComparer<TSource, TKey> : IEqualityComparer<TSource>
+        private class SelectionEqualityComparer<TSource, TKey> : IEqualityComparer<TSource>
         {
             /// <summary>
             /// 比較する値に変換する関数です。
@@ -509,16 +511,12 @@ namespace Munyabe.Common
             /// <summary>
             /// インスタンスを初期化します。
             /// </summary>
-            public SelectionComparer(Func<TSource, TKey> keySelector)
+            public SelectionEqualityComparer(Func<TSource, TKey> keySelector)
             {
-                Guard.ArgumentNotNull(keySelector, "selector");
-
                 _keySelector = keySelector;
             }
 
-            /// <summary>
-            /// 指定したオブジェクトが等しいかどうかを判断します。
-            /// </summary>
+            /// <inheritdoc />
             public bool Equals(TSource x, TSource y)
             {
                 var xKey = _keySelector(x);
@@ -532,9 +530,7 @@ namespace Munyabe.Common
                 return xKey.Equals(yKey);
             }
 
-            /// <summary>
-            /// 指定したオブジェクトのハッシュコードを取得します。
-            /// </summary>
+            /// <inheritdoc />
             public int GetHashCode(TSource obj)
             {
                 var key = _keySelector(obj);
