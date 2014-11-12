@@ -155,6 +155,42 @@ namespace Test.Munyabe.Common
             Assert.IsTrue(new[] { 1, 2, 2, 3, 3, 3 }.Overlapped().SequenceEqual(new[] { 2, 3 }));
             Assert.IsFalse(new[] { 1, 2, 3, 4, 5 }.Overlapped().Any());
 
+            var persons1 = new[]
+                {
+                    new Person { Name = "A", Age = 1 },
+                    new Person { Name = "B", Age = 2 },
+                    new Person { Name = "C", Age = 3 },
+                    new Person { Name = "D", Age = 2 },
+                    new Person { Name = "E", Age = 3 }
+                }
+                .Overlapped(person => person.Age)
+                .Select(person => person.Name);
+            Assert.IsTrue(persons1.SequenceEqual(new[] { "D", "E" }));
+
+            var persons2 = new[]
+                {
+                    new Person { Name = "A", Age = 1 },
+                    new Person { Name = "B", Age = 2 },
+                    new Person { Name = "C", Age = 2 },
+                    new Person { Name = "D", Age = 3 },
+                    new Person { Name = "E", Age = 3 },
+                    new Person { Name = "F", Age = 3 }
+                }
+                .Overlapped(person => person.Age)
+                .Select(person => person.Name);
+            Assert.IsTrue(persons2.SequenceEqual(new[] { "C", "E" }));
+
+            var persons3 = new[]
+                {
+                    new Person { Name = "A", Age = 1 },
+                    new Person { Name = "B", Age = 2 },
+                    new Person { Name = "C", Age = 3 },
+                    new Person { Name = "D", Age = 4 },
+                    new Person { Name = "E", Age = 5 }
+                }
+                .Overlapped(person => person.Age);
+            Assert.IsFalse(persons3.Any());
+
             var compare = new PrefixCompare();
             Assert.IsTrue(new[] { "AA", "AB", "BB" }.Overlapped(compare).SequenceEqual(new[] { "AB" }));
             Assert.IsTrue(new[] { "AA", "AB", "AC", "BB", "BC" }.Overlapped(compare).SequenceEqual(new[] { "AB", "BC" }));

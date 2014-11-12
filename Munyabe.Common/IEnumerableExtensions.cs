@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Munyabe.Common.Algorithms;
 
@@ -323,6 +322,24 @@ namespace Munyabe.Common
         {
             Guard.ArgumentNotNull(source, "source");
             return OverlappedInternal(source, comparer);
+        }
+
+        /// <summary>
+        /// 重複している要素を返します。
+        /// </summary>
+        /// <typeparam name="TSource">各要素の型</typeparam>
+        /// <typeparam name="TKey">比較する値の型</typeparam>
+        /// <param name="source">処理を適用する値のシーケンス</param>
+        /// <param name="keySelector">比較する値に変換する関数</param>
+        /// <returns>重複している要素のシーケンス</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>または<paramref name="keySelector"/>が<see langword="null"/>です。</exception>
+        [DebuggerStepThrough]
+        public static IEnumerable<TSource> Overlapped<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+        {
+            Guard.ArgumentNotNull(source, "source");
+            Guard.ArgumentNotNull(keySelector, "keySelector");
+
+            return OverlappedInternal(source, new SelectionComparer<TSource, TKey>(keySelector));
         }
 
         /// <summary>
