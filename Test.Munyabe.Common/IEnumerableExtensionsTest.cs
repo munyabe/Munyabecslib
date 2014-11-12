@@ -65,32 +65,30 @@ namespace Test.Munyabe.Common
         public void DistinctTest()
         {
             var actual1 = new[]
-            {
-                new Person { Name = "A", Age = 1 },
-                new Person { Name = "B", Age = 2 },
-                new Person { Name = "C", Age = 3 },
-                new Person { Name = "D", Age = 3 },
-                new Person { Name = "E", Age = 2 }
-            }
-            .Distinct(person => person.Age)
-            .Select(person => person.Name);
+                {
+                    new Person { Name = "A", Age = 1 },
+                    new Person { Name = "B", Age = 2 },
+                    new Person { Name = "C", Age = 3 },
+                    new Person { Name = "D", Age = 3 },
+                    new Person { Name = "E", Age = 2 }
+                }
+                .Distinct(person => person.Age)
+                .Select(person => person.Name);
 
-            var expected1 = new[] { "A", "B", "C" };
-            Assert.IsTrue(actual1.SequenceEqual(expected1));
+            Assert.IsTrue(actual1.SequenceEqual(new[] { "A", "B", "C" }));
 
             var actual2 = new[]
-            {
-                new Person { Name = "A", Age = 1 },
-                new Person { Name = null, Age = 2 },
-                new Person { Name = "A", Age = 3 },
-                new Person { Name = null, Age = 4 },
-                new Person { Name = null, Age = 5 }
-            }
-            .Distinct(person => person.Name)
-            .Select(person => person.Age);
+                {
+                    new Person { Name = "A", Age = 1 },
+                    new Person { Name = null, Age = 2 },
+                    new Person { Name = "A", Age = 3 },
+                    new Person { Name = null, Age = 4 },
+                    new Person { Name = null, Age = 5 }
+                }
+                .Distinct(person => person.Name)
+                .Select(person => person.Age);
 
-            var expected2 = new[] { 1, 2 };
-            Assert.IsTrue(actual2.SequenceEqual(expected2));
+            Assert.IsTrue(actual2.SequenceEqual(new[] { 1, 2 }));
         }
 
         [TestMethod]
@@ -191,7 +189,7 @@ namespace Test.Munyabe.Common
                 .Overlapped(person => person.Age);
             Assert.IsFalse(persons3.Any());
 
-            var compare = new PrefixCompare();
+            var compare = new PrefixEqualityCompare();
             Assert.IsTrue(new[] { "AA", "AB", "BB" }.Overlapped(compare).SequenceEqual(new[] { "AB" }));
             Assert.IsTrue(new[] { "AA", "AB", "AC", "BB", "BC" }.Overlapped(compare).SequenceEqual(new[] { "AB", "BC" }));
             Assert.IsFalse(new[] { "AA", "BB", "CC" }.Overlapped(compare).Any());
@@ -333,9 +331,9 @@ namespace Test.Munyabe.Common
         }
 
         /// <summary>
-        /// 先頭の1a文字を比較する<see cref="IEqualityComparer{T}"/>です。
+        /// 先頭の1文字を比較する<see cref="IEqualityComparer{T}"/>です。
         /// </summary>
-        private class PrefixCompare : IEqualityComparer<string>
+        private class PrefixEqualityCompare : IEqualityComparer<string>
         {
             /// <inheritdoc />
             public bool Equals(string x, string y)
