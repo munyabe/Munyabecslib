@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -144,6 +145,36 @@ namespace Test.Munyabe.Common
             Assert.IsTrue(new string[] { null }.IsSingleKind());
             Assert.IsTrue(new string[] { null, null }.IsSingleKind());
             Assert.IsFalse(new[] { null, "a" }.IsSingleKind());
+        }
+
+        [TestMethod]
+        public void MaxByTest()
+        {
+            Assert.AreEqual(5, new[] { 1, 12, 3, 24, 5 }.MaxBy(new ModuloComparer(10)));
+            Assert.AreEqual(5, new[] { 5, 12, 3, 24, 1 }.MaxBy(new ModuloComparer(10)));
+            Assert.AreEqual(5, new[] { 1, 12, 5, 24, 3 }.MaxBy(new ModuloComparer(10)));
+            Assert.AreEqual(0, new[] { 0, 0, 0 }.MaxBy(new ModuloComparer(10)));
+
+            IComparer<int> nullcomparer = null;
+            Assert.AreEqual(5, new[] { 1, 2, 5, 4, 3 }.MaxBy(nullcomparer));
+
+            var olderPerson = new[]
+                {
+                    new Person { Name = "A", Age = 1 },
+                    new Person { Name = "B", Age = 2 },
+                    new Person { Name = "C", Age = 5 },
+                    new Person { Name = "D", Age = 4 },
+                    new Person { Name = "E", Age = 3 }
+                }
+                .MaxBy(person => person.Age);
+            Assert.AreEqual("C", olderPerson.Name);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void MaxByTest_NoElementsError()
+        {
+            Enumerable.Empty<int>().MaxBy(null);
         }
 
         [TestMethod]
@@ -327,6 +358,36 @@ namespace Test.Munyabe.Common
             IEnumerator IEnumerable.GetEnumerator()
             {
                 return GetEnumerator();
+            }
+        }
+
+        /// <summary>
+        /// 指定の数の剰余を比較する<see cref="IComparer{T}"/>です。
+        /// </summary>
+        private class ModuloComparer : IComparer<int>
+        {
+            /// <summary>
+            /// <see cref="Int32"/>を比較する<see cref="Comparer{T}"/>です。
+            /// </summary>
+            private readonly IComparer<int> _defaultComparer = Comparer<int>.Default;
+
+            /// <summary>
+            /// 剰余を算出する法です。
+            /// </summary>
+            private readonly int _divisor;
+
+            /// <summary>
+            /// インスタンスを初期化します。
+            /// </summary>
+            public ModuloComparer(int divisor)
+            {
+                _divisor = divisor;
+            }
+
+            /// <inheritdoc />
+            public int Compare(int x, int y)
+            {
+                return _defaultComparer.Compare(x % _divisor, y % _divisor);
             }
         }
 

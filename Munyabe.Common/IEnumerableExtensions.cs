@@ -296,6 +296,39 @@ namespace Munyabe.Common
         }
 
         /// <summary>
+        /// シーケンスの最大値を返します。
+        /// </summary>
+        /// <typeparam name="T">各要素の型</typeparam>
+        /// <param name="source">処理を適用する値のシーケンス</param>
+        /// <param name="comparer">値を比較する<see cref="IEqualityComparer{T}"/></param>
+        /// <returns>シーケンスの最大値</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>が<see langword="null"/>です。</exception>
+        [DebuggerStepThrough]
+        public static T MaxBy<T>(this IEnumerable<T> source, IComparer<T> comparer)
+        {
+            Guard.ArgumentNotNull(source, "source");
+
+            return MaxByInternal(source, comparer);
+        }
+
+        /// <summary>
+        /// シーケンスの最大値を返します。
+        /// </summary>
+        /// <typeparam name="TSource">各要素の型</typeparam>
+        /// <typeparam name="TKey">比較する値の型</typeparam>
+        /// <param name="source">処理を適用する値のシーケンス</param>
+        /// <param name="keySelector">比較する値に変換する関数</param>
+        /// <returns>シーケンスの最大値</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>または<paramref name="keySelector"/>が<see langword="null"/>です。</exception>
+        public static TSource MaxBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector)
+        {
+            Guard.ArgumentNotNull(source, "source");
+            Guard.ArgumentNotNull(keySelector, "keySelector");
+
+            return MaxByInternal(source, new SelectionComparer<TSource, TKey>(keySelector));
+        }
+
+        /// <summary>
         /// 重複している要素を返します。
         /// </summary>
         /// <typeparam name="T">各要素の型</typeparam>
@@ -475,6 +508,38 @@ namespace Munyabe.Common
         }
 
         /// <summary>
+        /// シーケンスの最大値を返す内部メソッドです。
+        /// </summary>
+        private static T MaxByInternal<T>(this IEnumerable<T> source, IComparer<T> comparer)
+        {
+            if (comparer == null)
+            {
+                return source.Max();
+            }
+
+            T result;
+            using (var e = source.GetEnumerator())
+            {
+                if (e.MoveNext() == false)
+                {
+                    throw new InvalidOperationException("Source sequence doesn't contain any elements.");
+                }
+
+                result = e.Current;
+                while (e.MoveNext())
+                {
+                    var current = e.Current;
+                    if (0 < comparer.Compare(current, result))
+                    {
+                        result = current;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// 重複している要素を返す内部メソッドです。
         /// </summary>
         private static IEnumerable<T> OverlappedInternal<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer)
@@ -499,6 +564,39 @@ namespace Munyabe.Common
         }
 
         /// <summary>
+        /// 変換した値から2つのオブジェクトを比較する<see cref="IComparer{T}"/>です。
+        /// </summary>
+        private class SelectionComparer<TSource, TKey> : IComparer<TSource>
+        {
+            /// <summary>
+            /// 変換した値を比較する<see cref="Comparer{T}"/>です。
+            /// </summary>
+            private readonly IComparer<TKey> _defaultComparer = Comparer<TKey>.Default;
+
+            /// <summary>
+            /// 比較する値に変換する関数です。
+            /// </summary>
+            private readonly Func<TSource, TKey> _keySelector;
+
+            /// <summary>
+            /// インスタンスを初期化します。
+            /// </summary>
+            public SelectionComparer(Func<TSource, TKey> keySelector)
+            {
+                _keySelector = keySelector;
+            }
+
+            /// <inheritdoc />
+            public int Compare(TSource x, TSource y)
+            {
+                var xKey = _keySelector(x);
+                var yKey = _keySelector(y);
+
+                return _defaultComparer.Compare(xKey, yKey);
+            }
+        }
+
+        /// <summary>
         /// 変換した値から2つのオブジェクトが等しいかどうかを比較する<see cref="IEqualityComparer{T}"/>です。
         /// </summary>
         private class SelectionEqualityComparer<TSource, TKey> : IEqualityComparer<TSource>
@@ -506,7 +604,7 @@ namespace Munyabe.Common
             /// <summary>
             /// 比較する値に変換する関数です。
             /// </summary>
-            private Func<TSource, TKey> _keySelector;
+            private readonly Func<TSource, TKey> _keySelector;
 
             /// <summary>
             /// インスタンスを初期化します。
