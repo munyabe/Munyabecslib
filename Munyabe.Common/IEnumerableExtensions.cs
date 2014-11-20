@@ -89,20 +89,7 @@ namespace Munyabe.Common
                 return 1;
             }
 
-            var index = 0;
-            using (var sourceEnumerator = source.GetEnumerator())
-            {
-                while (sourceEnumerator.MoveNext())
-                {
-                    index++;
-                    if (count < index)
-                    {
-                        return 1;
-                    }
-                }
-            }
-
-            return index == count ? 0 : -1;
+            return CompareCountInternal<TSource>(source, count);
         }
 
         /// <summary>
@@ -193,7 +180,14 @@ namespace Munyabe.Common
         [DebuggerStepThrough]
         public static bool IsCount<T>(this IEnumerable<T> source, int count)
         {
-            return CompareCount(source, count) == 0;
+            Guard.ArgumentNotNull(source, "source");
+
+            if (count < 0)
+            {
+                return false;
+            }
+
+            return CompareCountInternal<T>(source, count) == 0;
         }
 
         /// <summary>
@@ -208,20 +202,7 @@ namespace Munyabe.Common
         {
             Guard.ArgumentNotNull(source, "source");
 
-            int count = 0;
-            using (var enumerator = source.GetEnumerator())
-            {
-                while (enumerator.MoveNext())
-                {
-                    count++;
-                    if (count == 2)
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
+            return CompareCountInternal<T>(source, 1) == 0;
         }
 
         /// <summary>
@@ -475,6 +456,27 @@ namespace Munyabe.Common
                 action(value);
                 yield return value;
             }
+        }
+
+        /// <summary>
+        /// シーケンスの要素数を比較し、相対値を示す値を返す内部メソッドです。
+        /// </summary>
+        private static int CompareCountInternal<T>(IEnumerable<T> source, int count)
+        {
+            var index = 0;
+            using (var sourceEnumerator = source.GetEnumerator())
+            {
+                while (sourceEnumerator.MoveNext())
+                {
+                    index++;
+                    if (count < index)
+                    {
+                        return 1;
+                    }
+                }
+            }
+
+            return index == count ? 0 : -1;
         }
 
         /// <summary>
