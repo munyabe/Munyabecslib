@@ -126,10 +126,6 @@ namespace Test.Munyabe.Common
         {
             Assert.IsTrue(Enumerable.Range(0, 1).IsSingle());
             Assert.IsFalse(Enumerable.Range(0, 2).IsSingle());
-
-            Assert.IsTrue(Enumerable.Range(1, 9).IsSingle(num => num % 5 == 0));
-            Assert.IsFalse(Enumerable.Range(1, 10).IsSingle(num => num % 5 == 0));
-            Assert.IsFalse(Enumerable.Range(1, 10).IsSingle(num => num % 11 == 0));
         }
 
         [TestMethod]

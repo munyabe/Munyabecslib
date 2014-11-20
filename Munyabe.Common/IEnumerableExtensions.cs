@@ -225,36 +225,6 @@ namespace Munyabe.Common
         }
 
         /// <summary>
-        /// <see cref="IEnumerable{T}"/>の要素が単一であるかどうかを判断します。
-        /// </summary>
-        /// <typeparam name="T">各要素の型</typeparam>
-        /// <param name="source">処理を適用する値のシーケンス</param>
-        /// <param name="predicate">各要素が条件を満たしているかどうかをテストする関数</param>
-        /// <returns>要素が単一のとき<see langword="true"/></returns>
-        /// <exception cref="ArgumentNullException"><paramref name="source"/>が<see langword="null"/>です。</exception>
-        [DebuggerStepThrough]
-        public static bool IsSingle<T>(this IEnumerable<T> source, Func<T, bool> predicate)
-        {
-            Guard.ArgumentNotNull(source, "source");
-            Guard.ArgumentNotNull(predicate, "predicate");
-
-            int count = 0;
-            foreach (T each in source)
-            {
-                if (predicate(each))
-                {
-                    count++;
-                    if (count == 2)
-                    {
-                        break;
-                    }
-                }
-            }
-
-            return count == 1;
-        }
-
-        /// <summary>
         /// 要素が1種類かどうかを判断します。
         /// </summary>
         /// <typeparam name="T">各要素の型</typeparam>
