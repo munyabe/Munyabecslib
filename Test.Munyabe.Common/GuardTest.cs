@@ -17,7 +17,7 @@ namespace Test.Munyabe.Common
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void ArgumentIsPositiveThrowExceptionTest()
         {
             Guard.ArgumentIsPositive(0, "argName");
